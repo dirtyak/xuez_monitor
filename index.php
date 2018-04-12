@@ -59,7 +59,7 @@ $getreportedblock = shell_exec('curl ' . $xuez_explorer . '/api/getblockcount');
 <!--<div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
 
 <!-- !PAGE CONTENT! -->
-<div class="w3-main" style="margin-left:5px;margin-top:43px;">
+<div class="w3-main" style="margin-top:23px;">
 
   <!-- Header -->
   <header class="w3-container" style="padding-top:22px">
