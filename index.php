@@ -69,8 +69,6 @@ $getreportedblock = shell_exec('curl ' . $xuez_explorer . '/api/getblockcount');
   <div class="w3-row-padding w3-margin-bottom">
     <div class="w3-quarter">
 
-
-
           <?php
           if((int)$getblockcount == 0)
           {
@@ -156,18 +154,10 @@ $getreportedblock = shell_exec('curl ' . $xuez_explorer . '/api/getblockcount');
   <div class="w3-container">
     <h5>Masternode Status</h5>
     <ul class="w3-ul w3-card-4 w3-white">
-      <li class="w3-padding-16">
-        <span class="w3-xlarge">Address(0) : <?php echo $address0;?></span><br>
-      </li>
-      <li class="w3-padding-16">
-        <span class="w3-xlarge"><?php if($walletunlocked == 1){echo "Wallet Unlocked";} else{echo "Wallet Locked";}?></span><br>
-      </li>
-      <li class="w3-padding-16">
-        <span class="w3-xlarge"><?php if($enoughcoins == 1){echo "Enough Coins";} else{echo "Not Enough Coins";}?></span><br>
-      </li>
-      <li class="w3-padding-16">
-        <span class="w3-xlarge"><?php echo $stakingstatus;?></span><br>
-      </li>
+      <?php if(isset($address0)){echo '<li class="w3-padding-16"><span class="w3-xlarge">Address(0) : ' . $address0 . '</li>';}?></span>
+      <?php if($walletunlocked == 1){echo '<li class="w3-padding-16"><span class="w3-xlarge">Wallet Unlocked</li>';} ?></span>
+      <?php if($enoughcoins == 1){echo '<li class="w3-padding-16"><span class="w3-xlarge">Enough Coins</li>';} ?></span>
+      <?php if(isset($stakingstatus)){echo '<li class="w3-padding-16"><span class="w3-xlarge">' . $stakingstatus . '</li>';}?></span>
     </ul>
   </div>
   <hr>
