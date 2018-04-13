@@ -51,10 +51,7 @@ $loadp3 = $loadp3.'%';
 $uptime = shell_exec('uptime -p'); # system uptime
 $serveraddr = $_SERVER['SERVER_ADDR'];
 $getreportedblock = shell_exec('curl ' . $xuez_explorer . '/api/getblockcount'); # asking block height to explorer
-
 ?>
-
-
 
 <!-- Overlay effect when opening sidebar on small screens -->
 <!--<div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
@@ -89,7 +86,6 @@ $getreportedblock = shell_exec('curl ' . $xuez_explorer . '/api/getblockcount');
             echo '<div class="w3-right">';
             echo '<h3>Online</h3>';
           }
-
           ?>
         </div>
         <div class="w3-clear"></div>
