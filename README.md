@@ -1,26 +1,28 @@
 # xuez-monitor
 
-PHP script designed to monitor several xuez daemon on Ubuntu
+PHP script designed to monitor daemon via apache on local linux running Xuez CLI
 
 # Requirements
 
-- XUEZ Wallet
+- XUEZ CLI Linux Wallet https://github.com/XUEZ/xuez/releases
+
 <pre>
-wget https://github.com/XUEZ/XUEZ/releases/download/v1.0.0/xuez-1.0.0-linux-cli.tgz
+wget https://github.com/XUEZ/xuez/releases/download/1.0.1.7/xuez-linux-cli-1017.tgz
 tar zxvf xuez-1.0.0-linux-cli.tgz
 </pre>
 - Apache2 and php running :
 
 <pre>apt-get install apache2 php</pre>
 
-# Install
+# Features
+- Node status
+- Balance
+- Tx History
+- System info
+- Explorer links
 
-
-# Config
-
-
-# Example 
+# Example
 
 You can try it at : http://45.77.53.110/
 
-Hosted by Vultr : https://www.vultr.com/?ref=7280492
+Hosted on Vultr : https://www.vultr.com/?ref=7280492

@@ -51,7 +51,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 
 <!-- Top container -->
 <div class="w3-bar w3-top w3-black w3-large" style="z-index:4">
-  <span class="w3-bar-item w3-right">XUEZmon |  | Xuez Core v.<?php print $version;?></span>
+  <span class="w3-bar-item w3-right">XUEZmon | Xuez Core v.<?php print $version;?></span>
 </div>
 
 <!-- !PAGE CONTENT! -->
@@ -147,10 +147,11 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
   </div>
   <div class="w3-container">
     <ul class="w3-ul w3-card-4 w3-white">
-      <?php if(isset($address0)){echo '<li class="w3-padding-16"><span class="w3-xlarge">Address(0) : <tr>' . $address0 . '</tr></li>';}?></span>
+      <?php if(isset($address0)){echo '<li class="w3-padding-16"><span class="w3-xlarge">Random Address (0) : <tr>' . $address0 . '</tr></li>';}?></span>
     </ul>
   </div>
   <div class="w3-container">
+    <br>
     <h5>Staking Status</h5>
     <ul class="w3-ul w3-card-4 w3-white">
       <?php if(isset($walletunlocked) && $walletunlocked == 1){echo '<li class="w3-padding-16"><span class="w3-xlarge">Wallet Unlocked</li>';}elseif(isset($walletunlocked) && $walletunlocked == 0){echo '<li class="w3-padding-16"><span class="w3-xlarge">Wallet Locked</li>';} ?></span>
@@ -162,12 +163,10 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
   <div class="w3-container">
     <h5>Masternode Status</h5>
     <ul class="w3-ul w3-card-4 w3-white">
-      <li>
-        test
-      </li>
+      <?php if(isset($walletunlocked) && $walletunlocked == 1){echo '<li class="w3-padding-16"><span class="w3-xlarge">Wallet Unlocked</li>';}elseif(isset($walletunlocked) && $walletunlocked == 0){echo '<li class="w3-padding-16"><span class="w3-xlarge">Wallet Locked</li>';} ?></span>
     </ul>
   </div>
-  <hr>
+  <br>
   <div class="w3-container">
     <h5>Transactions</h5>
     <table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">
@@ -184,7 +183,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
         echo "<td>" . date('d/m/Y', $obj3[0]->{'timereceived'}) . "</td>";
         echo "<td>" . date('H:i:s', $obj3[0]->{'timereceived'}) . "</td>";
         echo "<td>" . $obj3[$i]->{'category'} . "</td>";
-        echo "<td>" . $obj3[$i]->{'address'} . "</td>";
+        echo "<td><a href=http://xuez.donkeypool.com/tx/" . $obj3[$i]->{'txid'} . ">" . $obj3[$i]->{'address'} . "</td>";
         echo "<td>" . $obj3[$i]->{'amount'} . "</td>";
         echo "</tr>";
       }
@@ -196,19 +195,19 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 
     <p>Host</p>
     <div>
-      <div class="w3-container w3-padding" ><b><?php echo $_SERVER['SERVER_ADDR'] ?></b></div>
+      <div class="w3-container w3-dark-grey w3-padding" ><b><?php echo $_SERVER['SERVER_ADDR'] ?></b></div>
     </div>
 
     <p>Uptime</p>
     <div>
-      <div class="w3-container w3-padding" ><b><?php $uptime = shell_exec('uptime -p'); echo $uptime?></b></div>
+      <div class="w3-container w3-dark-grey w3-padding" ><b><?php $uptime = shell_exec('uptime -p'); echo $uptime?></b></div>
     </div>
 
     <p>Load Average (1m / 5m / 15m)</p>
-    <div class="w3-grey">
-      <div class="w3-container w3-center w3-padding w3-<?php if((int)$loadp1 < 20){echo "green";} elseif((int)$loadp1 < 80){echo "orange";} elseif((int)$loadp1 >= 80){echo "red";}?> w3-text-black" style="width:<?php echo $loadp1?>"><b><?php echo $load1?></b></div>
-      <div class="w3-container w3-center w3-padding w3-<?php if((int)$loadp2 < 20){echo "green";} elseif((int)$loadp2 < 80){echo "orange";} elseif((int)$loadp2 >= 80){echo "red";}?> w3-text-black" style="width:<?php echo $loadp2?>"><b><?php echo $load2?></b></div>
-      <div class="w3-container w3-center w3-padding w3-<?php if((int)$loadp3 < 20){echo "green";} elseif((int)$loadp3 < 80){echo "orange";} elseif((int)$loadp3 >= 80){echo "red";}?> w3-text-black" style="width:<?php echo $loadp3?>"><b><?php echo $load3?></b></div>
+    <div class="w3-dark-grey">
+      <div class="w3-container w3-center w3-padding w3-<?php if((int)$loadp1 < 20){echo "green";} elseif((int)$loadp1 < 80){echo "orange";} elseif((int)$loadp1 >= 80){echo "red";}?>" style="width:<?php echo $loadp1?>"><b><?php echo $load1?></b></div>
+      <div class="w3-container w3-center w3-padding w3-<?php if((int)$loadp2 < 20){echo "green";} elseif((int)$loadp2 < 80){echo "orange";} elseif((int)$loadp2 >= 80){echo "red";}?>" style="width:<?php echo $loadp2?>"><b><?php echo $load2?></b></div>
+      <div class="w3-container w3-center w3-padding w3-<?php if((int)$loadp3 < 20){echo "green";} elseif((int)$loadp3 < 80){echo "orange";} elseif((int)$loadp3 >= 80){echo "red";}?>" style="width:<?php echo $loadp3?>"><b><?php echo $load3?></b></div>
     </div>
   <hr>
 
@@ -222,9 +221,8 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
       </div>
     </div>
   </div>
-
   <!-- Footer -->
-  <footer class="w3-container w3-padding-16 w3-light-grey">
+  <footer class="w3-container w3-padding-16 w3-dark-grey">
     <p>Source code available on <a href="https://github.com/dirtyak/xuez_monitor" target="_blank">GitHub</a></p>
   </footer>
 
