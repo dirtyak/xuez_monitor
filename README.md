@@ -21,8 +21,16 @@ tar zxvf xuez-1.0.0-linux-cli.tgz
 - System info
 - Explorer links
 
+# Important
+- This script will use sudo to execute local commands
+- Only output commands are used (getinfo, getblockcount...)
+- You cannot send coins with this script
+- You can only receive coins on generated address (address 0)
+
 # Example
-
 You can try it at : http://45.77.53.110/
-
 Hosted on Vultr : https://www.vultr.com/?ref=7280492
+
+# Donate
+Feel free
+XUEZ : XHQyJRVhfsX8Po7bbjpzEtgiVjbjdQJMcu
