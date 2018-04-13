@@ -51,7 +51,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 
 <!-- Top container -->
 <div class="w3-bar w3-top w3-black w3-large" style="z-index:4">
-  <span class="w3-bar-item w3-right">XUEZmon | Xuez Core v.<?php print $version;?></span>
+  <span class="w3-bar-item w3-right"><b>xuez_monitor</b> | Xuez Core v.<?php print $version;?></span>
 </div>
 
 <!-- !PAGE CONTENT! -->
