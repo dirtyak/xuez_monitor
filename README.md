@@ -24,8 +24,6 @@ apt-get install apache2 php
 # Important
 - This script will use sudo to execute local commands
 - Only output commands are used (getinfo, getblockcount...)
-- You cannot send coins with this script
-- You can only receive coins on generated address (address 0)
 
 # Example
 - You can see it running : http://45.77.53.110/

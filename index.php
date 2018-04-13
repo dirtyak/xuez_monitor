@@ -1,4 +1,5 @@
 <?php
+$serveraddr = $_SERVER['SERVER_ADDR'];
 $xuez_explorer = "xuez.donkeypool.com"; # Explorer to use
 $xuez_path = "/root/XUEZ/";
 $getreportedblock = shell_exec('curl ' . $xuez_explorer . '/api/getblockcount'); # asking block height to explorer
@@ -18,6 +19,8 @@ $obj2 = json_decode($getstakingstatus);
 $walletunlocked = $obj2->{'walletunlocked'};
 $enoughcoins = $obj2->{'enoughcoins'};
 
+$getmasternodestatus = shell_exec("sudo " . $xuez_path . "/xuez-cli getmasternodestatus");
+
 $listtransactions = shell_exec("sudo " . $xuez_path . "/xuez-cli listtransactions");
 $obj3 = json_decode($listtransactions);
 $tx1 = $obj3->{'category'};
@@ -33,7 +36,6 @@ $loadp3 = $load3 * 100;
 $loadp3 = $loadp3.'%';
 
 $uptime = shell_exec('uptime -p'); # system uptime
-$serveraddr = $_SERVER['SERVER_ADDR'];
 ?>
 
 <!DOCTYPE html>
@@ -51,6 +53,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 
 <!-- Top container -->
 <div class="w3-bar w3-top w3-black w3-large" style="z-index:4">
+
   <span class="w3-bar-item w3-right"><b>xuez_monitor</b> | Xuez Core v.<?php print $version;?></span>
 </div>
 
@@ -62,83 +65,20 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     <h5><b><i class="fa fa-dashboard"></i> Dashboard</b></h5>
   </header>
 
-  <div class="w3-row-padding w3-margin-bottom">
-    <div class="w3-quarter">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-          <?php if(!isset($getblockcount))
-          {
-            echo '<div class="w3-container w3-red w3-padding-16"><div class="w3-right">';
-            echo '<h3>Offline</h3>';
-          }
-          elseif((int)$getblockcount < (int)$getreportedblock)
-          {
-            echo '<div class="w3-container w3-orange w3-padding-16"><div class="w3-right">';
-            echo '<h3>Syncing</h3>';
-          }
-          elseif((int)$getblockcount == (int)$getreportedblock)
-          {
-            echo '<div class="w3-container w3-green w3-padding-16"><div class="w3-right">';
-            echo '<h3>Online</h3>';
-          }
-          ?>
-        </div>
-        <div class="w3-clear"></div>
-        <h4>Status</h4>
-      </div>
+
+
+  <div class="w3-row-padding w3-margin-bottom">
+    <div id="status" class="w3-quarter">
     </div>
-    <div class="w3-quarter">
-      <?php
-      if($getconnectioncount == 0)
-      {
-      echo '<div class="w3-container w3-red w3-padding-16">';
-      }
-      elseif($getconnectioncount < 10)
-      {
-        echo '<div class="w3-container w3-orange w3-padding-16">';
-      }
-      elseif($getconnectioncount >= 10)
-      {
-        echo '<div class="w3-container w3-green w3-padding-16">';
-      }
-      ?>
-        <div class="w3-right">
-          <h3><?php echo (int)$getconnectioncount?></h3>
-        </div>
-        <div class="w3-clear"></div>
-        <h4>Connections</h4>
-      </div>
+    <div id="connectioncount" class="w3-quarter">
     </div>
-    <div class="w3-quarter">
-      <?php
-      if((int)$getblockcount == 0)
-      {
-      echo '<div class="w3-container w3-red w3-padding-16">';
-      }
-      elseif((int)$getblockcount < (int)$getreportedblock)
-      {
-        echo '<div class="w3-container w3-orange w3-padding-16">';
-      }
-      elseif((int)$getblockcount == (int)$getreportedblock)
-      {
-        echo '<div class="w3-container w3-green w3-padding-16">';
-      }
-      else
-      {
-        echo '<div class="w3-container w3-red w3-padding-16">';
-      }
-      ?>
-        <div class="w3-right">
-          <h3><?php echo (int)$getblockcount;?>
-          </h3>
-        </div>
-        <div class="w3-clear"></div>
-        <h4>Blocks</h4>
-      </div>
+    <div id="blockcount" class="w3-quarter">
     </div>
     <div class="w3-quarter">
       <div class="w3-container w3-dark-grey w3-text-white w3-padding-16">
-        <div class="w3-right">
-          <h3><?php echo $getbalance?></h3>
+        <div id="balance" class="w3-right">
         </div>
         <div class="w3-clear"></div>
         <h4>Balance</h4>
@@ -153,6 +93,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
   <div class="w3-container">
     <br>
     <h5>Staking Status</h5>
+
     <ul class="w3-ul w3-card-4 w3-white">
       <?php if(isset($walletunlocked) && $walletunlocked == 1){echo '<li class="w3-padding-16"><span class="w3-xlarge">Wallet Unlocked</li>';}elseif(isset($walletunlocked) && $walletunlocked == 0){echo '<li class="w3-padding-16"><span class="w3-xlarge">Wallet Locked</li>';} ?></span>
       <?php if(isset($enoughcoins) && $enoughcoins == 1){echo '<li class="w3-padding-16"><span class="w3-xlarge">Enough Coins</li>';}if(isset($enoughcoins) && $enoughcoins == 0){echo '<li class="w3-padding-16"><span class="w3-xlarge">Not Enough Coins</li>';} ?></span>
@@ -225,6 +166,21 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
   <footer class="w3-container w3-padding-16 w3-dark-grey">
     <p>Source code available on <a href="https://github.com/dirtyak/xuez_monitor" target="_blank">GitHub</a></p>
   </footer>
+
+  <script>
+    function loadlink(){
+      $( "#status" ).load( "status.php" );
+      $( "#connectioncount" ).load( "connectioncount.php" );
+      $( "#blockcount" ).load( "blockcount.php" );
+      $( "#balance" ).load( "balance.php" );
+    }
+
+    loadlink(); // This will run on page load
+    setInterval(function(){
+        loadlink() // this will run after every 5 seconds
+    }, 1000);
+  </script>
+
 
   <!-- End page content -->
 </div>
