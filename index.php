@@ -1,18 +1,14 @@
 <?php
+include 'config.php';
+
 $serveraddr = $_SERVER['SERVER_ADDR'];
-$xuez_explorer = "xuez.donkeypool.com"; # Explorer to use
-$xuez_path = "/root/XUEZ/";
-$getreportedblock = shell_exec('curl ' . $xuez_explorer . '/api/getblockcount'); # asking block height to explorer
 
 $getinfo = shell_exec("sudo " . $xuez_path . "/xuez-cli getinfo");
 $obj = json_decode($getinfo);
-$getbalance = $obj->{'balance'}; // 12345
 $version = $obj->{'version'};
-$getblockcount = $obj->{'blocks'};
-$getconnectioncount = $obj->{'connections'};
 $stakingstatus = $obj->{'staking status'};
 $difficulty = $obj->{'difficulty'};
-$address0 = $cmd = shell_exec("sudo " . $xuez_path . "/xuez-cli getaccountaddress 0");
+$address0 = shell_exec("sudo " . $xuez_path . "/xuez-cli getaccountaddress 0");
 
 $getstakingstatus = shell_exec("sudo " . $xuez_path . "/xuez-cli getstakingstatus");
 $obj2 = json_decode($getstakingstatus);
@@ -22,8 +18,7 @@ $enoughcoins = $obj2->{'enoughcoins'};
 $getmasternodestatus = shell_exec("sudo " . $xuez_path . "/xuez-cli getmasternodestatus");
 
 $listtransactions = shell_exec("sudo " . $xuez_path . "/xuez-cli listtransactions");
-$obj3 = json_decode($listtransactions);
-$tx1 = $obj3->{'category'};
+$txlist = json_decode($listtransactions);
 
 $load1 = shell_exec("uptime | grep -ohe 'load average[s:][: ].*' | awk '{ print $3 }' | sed s/,//g");
 $load2 = shell_exec("uptime | grep -ohe 'load average[s:][: ].*' | awk '{ print $4 }' | sed s/,//g");
@@ -67,8 +62,6 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-
-
   <div class="w3-row-padding w3-margin-bottom">
     <div id="status" class="w3-quarter">
     </div>
@@ -76,13 +69,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     </div>
     <div id="blockcount" class="w3-quarter">
     </div>
-    <div class="w3-quarter">
-      <div class="w3-container w3-dark-grey w3-text-white w3-padding-16">
-        <div id="balance" class="w3-right">
-        </div>
-        <div class="w3-clear"></div>
-        <h4>Balance</h4>
-      </div>
+    <div id="balance" class="w3-quarter">
     </div>
   </div>
   <div class="w3-container">
@@ -119,13 +106,13 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
         <td><b>Amount</b></td>
       </tr>
       <?php
-      for ($i = 0; $i < count($obj3); $i++) {
+      for ($i = 0; $i < count($txlist); $i++) {
         echo "<tr>";
-        echo "<td>" . date('d/m/Y', $obj3[0]->{'timereceived'}) . "</td>";
-        echo "<td>" . date('H:i:s', $obj3[0]->{'timereceived'}) . "</td>";
-        echo "<td>" . $obj3[$i]->{'category'} . "</td>";
-        echo "<td><a href=http://xuez.donkeypool.com/tx/" . $obj3[$i]->{'txid'} . ">" . $obj3[$i]->{'address'} . "</td>";
-        echo "<td>" . $obj3[$i]->{'amount'} . "</td>";
+        echo "<td>" . date('d/m/Y', $txlist[0]->{'timereceived'}) . "</td>";
+        echo "<td>" . date('H:i:s', $txlist[0]->{'timereceived'}) . "</td>";
+        echo "<td>" . $txlist[$i]->{'category'} . "</td>";
+        echo "<td><a href=http://xuez.donkeypool.com/tx/" . $txlist[$i]->{'txid'} . ">" . $txlist[$i]->{'address'} . "</td>";
+        echo "<td>" . $txlist[$i]->{'amount'} . "</td>";
         echo "</tr>";
       }
        ?>
@@ -133,38 +120,31 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
   </div>
   <div class="w3-container">
     <h5>System Info</h5>
-
     <p>Host</p>
     <div>
       <div class="w3-container w3-dark-grey w3-padding" ><b><?php echo $_SERVER['SERVER_ADDR'] ?></b></div>
     </div>
-
     <p>Uptime</p>
     <div>
       <div class="w3-container w3-dark-grey w3-padding" ><b><?php $uptime = shell_exec('uptime -p'); echo $uptime?></b></div>
     </div>
-
     <p>Load Average (1m / 5m / 15m)</p>
     <div class="w3-dark-grey">
-      <div class="w3-container w3-center w3-padding w3-<?php if((int)$loadp1 < 20){echo "green";} elseif((int)$loadp1 < 80){echo "orange";} elseif((int)$loadp1 >= 80){echo "red";}?>" style="width:<?php echo $loadp1?>"><b><?php echo $load1?></b></div>
-      <div class="w3-container w3-center w3-padding w3-<?php if((int)$loadp2 < 20){echo "green";} elseif((int)$loadp2 < 80){echo "orange";} elseif((int)$loadp2 >= 80){echo "red";}?>" style="width:<?php echo $loadp2?>"><b><?php echo $load2?></b></div>
-      <div class="w3-container w3-center w3-padding w3-<?php if((int)$loadp3 < 20){echo "green";} elseif((int)$loadp3 < 80){echo "orange";} elseif((int)$loadp3 >= 80){echo "red";}?>" style="width:<?php echo $loadp3?>"><b><?php echo $load3?></b></div>
+      <div class="w3-container w3-center w3-padding w3-<?php if((int)$loadp1 <= 33){echo "green";} elseif((int)$loadp1 < 75){echo "orange";} elseif((int)$loadp1 >= 75){echo "red";}?>" style="width:<?php echo $loadp1?>"><b><?php echo $load1?></b></div>
+      <div class="w3-container w3-center w3-padding w3-<?php if((int)$loadp2 <= 33){echo "green";} elseif((int)$loadp2 < 75){echo "orange";} elseif((int)$loadp2 >= 75){echo "red";}?>" style="width:<?php echo $loadp2?>"><b><?php echo $load2?></b></div>
+      <div class="w3-container w3-center w3-padding w3-<?php if((int)$loadp3 <= 33){echo "green";} elseif((int)$loadp3 < 75){echo "orange";} elseif((int)$loadp3 >= 75){echo "red";}?>" style="width:<?php echo $loadp3?>"><b><?php echo $load3?></b></div>
     </div>
   <hr>
 
-  <div class="w3-container w3-dark-grey w3-padding-32">
-    <div class="w3-row">
-      <div class="w3-container w3-third">
-        <h5 class="w3-bottombar w3-border-blue">XUEZ Links</h5>
-        <p><a href="http://xuez.donkeypool.com">Explorer</a></p>
-        <p><a href="https://discordapp.com/invite/3Yypx4C">Discord</a></p>
-        <p><a href="https://xuezcoin.com/">Website</a></p>
-      </div>
-    </div>
-  </div>
   <!-- Footer -->
   <footer class="w3-container w3-padding-16 w3-dark-grey">
-    <p>Source code available on <a href="https://github.com/dirtyak/xuez_monitor" target="_blank">GitHub</a></p>
+    <h5 class="w3-bottombar w3-border-blue">Support XUEZ</h5>
+    <p>Source code on <a href="https://github.com/dirtyak/xuez_monitor" target="_blank">GitHub</a></p>
+    <p>XUEZ Links :
+      <a href="http://xuez.donkeypool.com">Explorer</a> |
+      <a href="https://discordapp.com/invite/3Yypx4C">Discord</a> |
+      <a href="https://xuezcoin.com/">Website</a>
+    </p>
   </footer>
 
   <script>

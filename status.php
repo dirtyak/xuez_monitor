@@ -1,5 +1,6 @@
 <?php
-$xuez_path = "/root/XUEZ/";
+include 'config.php';
+
 $getconnectioncount = shell_exec("sudo " . $xuez_path . "/xuez-cli getconnectioncount");
 
 if(!isset($getconnectioncount)){
