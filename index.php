@@ -1,11 +1,8 @@
 <?php
 include 'config.php';
 
-$serveraddr = $_SERVER['SERVER_ADDR'];
-
 $getinfo = shell_exec("sudo " . $xuez_path . "/xuez-cli getinfo");
 $obj = json_decode($getinfo);
-$version = $obj->{'version'};
 $stakingstatus = $obj->{'staking status'};
 $difficulty = $obj->{'difficulty'};
 $address0 = shell_exec("sudo " . $xuez_path . "/xuez-cli getaccountaddress 0");
@@ -16,6 +13,11 @@ $walletunlocked = $obj2->{'walletunlocked'};
 $enoughcoins = $obj2->{'enoughcoins'};
 
 $getmasternodestatus = shell_exec("sudo " . $xuez_path . "/xuez-cli getmasternodestatus");
+
+$getnetworkinfo = shell_exec("sudo " . $xuez_path . "/xuez-cli getnetworkinfo");
+$obj3 = json_decode($getnetworkinfo);
+$version = $obj3->{'subversion'};
+$ipv4 = $obj3->{'localaddresses'}[0]->{'address'};
 
 $listtransactions = shell_exec("sudo " . $xuez_path . "/xuez-cli listtransactions");
 $txlist = json_decode($listtransactions);
@@ -49,7 +51,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 <!-- Top container -->
 <div class="w3-bar w3-top w3-black w3-large" style="z-index:4">
 
-  <span class="w3-bar-item w3-right"><b>xuez_monitor</b> | Xuez Core v.<?php print $version;?></span>
+  <span class="w3-bar-item w3-right"><b>xuez_monitor</b> | <?php print $version;?></span>
 </div>
 
 <!-- !PAGE CONTENT! -->
@@ -72,12 +74,12 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     <div id="balance" class="w3-quarter">
     </div>
   </div>
-  <div class="w3-container">
+  <div id="address0" class="w3-container">
     <ul class="w3-ul w3-card-4 w3-white">
       <?php if(isset($address0)){echo '<li class="w3-padding-16"><span class="w3-xlarge">Random Address (0) : <tr>' . $address0 . '</tr></li>';}?></span>
     </ul>
   </div>
-  <div class="w3-container">
+  <div id="staking" class="w3-container">
     <br>
     <h5>Staking Status</h5>
 
@@ -88,14 +90,14 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     </ul>
   </div>
   <br>
-  <div class="w3-container">
+  <div id="mnstatus" class="w3-container">
     <h5>Masternode Status</h5>
     <ul class="w3-ul w3-card-4 w3-white">
       <?php if(isset($walletunlocked) && $walletunlocked == 1){echo '<li class="w3-padding-16"><span class="w3-xlarge">Wallet Unlocked</li>';}elseif(isset($walletunlocked) && $walletunlocked == 0){echo '<li class="w3-padding-16"><span class="w3-xlarge">Wallet Locked</li>';} ?></span>
     </ul>
   </div>
   <br>
-  <div class="w3-container">
+  <div id="txlist" class="w3-container">
     <h5>Transactions</h5>
     <table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">
       <tr>
@@ -118,11 +120,11 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
        ?>
     </table><br>
   </div>
-  <div class="w3-container">
+  <div id="system" class="w3-container">
     <h5>System Info</h5>
     <p>Host</p>
     <div>
-      <div class="w3-container w3-dark-grey w3-padding" ><b><?php echo $_SERVER['SERVER_ADDR'] ?></b></div>
+      <div class="w3-container w3-dark-grey w3-padding" ><b><?php echo $ipv4 ?></b></div>
     </div>
     <p>Uptime</p>
     <div>
