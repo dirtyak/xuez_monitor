@@ -1,24 +1,7 @@
-<!DOCTYPE html>
-<html>
-<title>XUEZ NODE MONITOR</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<style>
-html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
-</style>
-<body class="w3-light-grey">
-
-<!-- Top container -->
-<div class="w3-bar w3-top w3-black w3-large" style="z-index:4">
-  <span class="w3-bar-item w3-right">XUEZ Node Monitor v0.1</span>
-</div>
-
 <?php
 $xuez_explorer = "xuez.donkeypool.com"; # Explorer to use
 $xuez_path = "/root/XUEZ/";
+$getreportedblock = shell_exec('curl ' . $xuez_explorer . '/api/getblockcount'); # asking block height to explorer
 
 $getinfo = shell_exec("sudo " . $xuez_path . "/xuez-cli getinfo");
 $obj = json_decode($getinfo);
@@ -43,18 +26,33 @@ $load1 = shell_exec("uptime | grep -ohe 'load average[s:][: ].*' | awk '{ print 
 $load2 = shell_exec("uptime | grep -ohe 'load average[s:][: ].*' | awk '{ print $4 }' | sed s/,//g");
 $load3 = shell_exec("uptime | grep -ohe 'load average[s:][: ].*' | awk '{ print $5 }'");
 $loadp1 = $load1 * 100;
-$loadp2 = $load2 * 100;
-$loadp3 = $load3 * 100;
 $loadp1 = $loadp1.'%';
+$loadp2 = $load2 * 100;
 $loadp2 = $loadp2.'%';
+$loadp3 = $load3 * 100;
 $loadp3 = $loadp3.'%';
+
 $uptime = shell_exec('uptime -p'); # system uptime
 $serveraddr = $_SERVER['SERVER_ADDR'];
-$getreportedblock = shell_exec('curl ' . $xuez_explorer . '/api/getblockcount'); # asking block height to explorer
 ?>
 
-<!-- Overlay effect when opening sidebar on small screens -->
-<!--<div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+<!DOCTYPE html>
+<html>
+<title>XUEZ NODE MONITOR</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
+</style>
+<body class="w3-light-grey">
+
+<!-- Top container -->
+<div class="w3-bar w3-top w3-black w3-large" style="z-index:4">
+  <span class="w3-bar-item w3-right">XUEZmon |  | Xuez Core v.<?php print $version;?></span>
+</div>
 
 <!-- !PAGE CONTENT! -->
 <div class="w3-main" style="margin-top:23px;">
@@ -67,23 +65,19 @@ $getreportedblock = shell_exec('curl ' . $xuez_explorer . '/api/getblockcount');
   <div class="w3-row-padding w3-margin-bottom">
     <div class="w3-quarter">
 
-          <?php
-          if((int)$getblockcount == 0)
+          <?php if(!isset($getblockcount))
           {
-            echo '<div class="w3-container w3-red w3-text-black w3-padding-16">';
-            echo '<div class="w3-right">';
+            echo '<div class="w3-container w3-red w3-padding-16"><div class="w3-right">';
             echo '<h3>Offline</h3>';
           }
           elseif((int)$getblockcount < (int)$getreportedblock)
           {
-            echo '<div class="w3-container w3-orange w3-padding-16">';
-            echo '<div class="w3-right">';
+            echo '<div class="w3-container w3-orange w3-padding-16"><div class="w3-right">';
             echo '<h3>Syncing</h3>';
           }
           elseif((int)$getblockcount == (int)$getreportedblock)
           {
-            echo '<div class="w3-container w3-green w3-padding-16">';
-            echo '<div class="w3-right">';
+            echo '<div class="w3-container w3-green w3-padding-16"><div class="w3-right">';
             echo '<h3>Online</h3>';
           }
           ?>
@@ -94,17 +88,17 @@ $getreportedblock = shell_exec('curl ' . $xuez_explorer . '/api/getblockcount');
     </div>
     <div class="w3-quarter">
       <?php
-      if($getconnectioncount < 10)
+      if($getconnectioncount == 0)
       {
-      echo '<div class="w3-container w3-orange w3-padding-16">';
+      echo '<div class="w3-container w3-red w3-padding-16">';
+      }
+      elseif($getconnectioncount < 10)
+      {
+        echo '<div class="w3-container w3-orange w3-padding-16">';
       }
       elseif($getconnectioncount >= 10)
       {
         echo '<div class="w3-container w3-green w3-padding-16">';
-      }
-      else
-      {
-        echo '<div class="w3-container w3-red w3-padding-16">';
       }
       ?>
         <div class="w3-right">
@@ -116,9 +110,13 @@ $getreportedblock = shell_exec('curl ' . $xuez_explorer . '/api/getblockcount');
     </div>
     <div class="w3-quarter">
       <?php
-      if((int)$getblockcount < (int)$getreportedblock)
+      if((int)$getblockcount == 0)
       {
-      echo '<div class="w3-container w3-orange w3-padding-16">';
+      echo '<div class="w3-container w3-red w3-padding-16">';
+      }
+      elseif((int)$getblockcount < (int)$getreportedblock)
+      {
+        echo '<div class="w3-container w3-orange w3-padding-16">';
       }
       elseif((int)$getblockcount == (int)$getreportedblock)
       {
@@ -147,14 +145,26 @@ $getreportedblock = shell_exec('curl ' . $xuez_explorer . '/api/getblockcount');
       </div>
     </div>
   </div>
-
+  <div class="w3-container">
+    <ul class="w3-ul w3-card-4 w3-white">
+      <?php if(isset($address0)){echo '<li class="w3-padding-16"><span class="w3-xlarge">Address(0) : <tr>' . $address0 . '</tr></li>';}?></span>
+    </ul>
+  </div>
+  <div class="w3-container">
+    <h5>Staking Status</h5>
+    <ul class="w3-ul w3-card-4 w3-white">
+      <?php if(isset($walletunlocked) && $walletunlocked == 1){echo '<li class="w3-padding-16"><span class="w3-xlarge">Wallet Unlocked</li>';}elseif(isset($walletunlocked) && $walletunlocked == 0){echo '<li class="w3-padding-16"><span class="w3-xlarge">Wallet Locked</li>';} ?></span>
+      <?php if(isset($enoughcoins) && $enoughcoins == 1){echo '<li class="w3-padding-16"><span class="w3-xlarge">Enough Coins</li>';}if(isset($enoughcoins) && $enoughcoins == 0){echo '<li class="w3-padding-16"><span class="w3-xlarge">Not Enough Coins</li>';} ?></span>
+      <?php if(isset($stakingstatus)){echo '<li class="w3-padding-16"><span class="w3-xlarge">' . $stakingstatus . '</li>';}?></span>
+    </ul>
+  </div>
+  <br>
   <div class="w3-container">
     <h5>Masternode Status</h5>
     <ul class="w3-ul w3-card-4 w3-white">
-      <?php if(isset($address0)){echo '<li class="w3-padding-16"><span class="w3-xlarge">Address(0) : ' . $address0 . '</li>';}?></span>
-      <?php if($walletunlocked == 1){echo '<li class="w3-padding-16"><span class="w3-xlarge">Wallet Unlocked</li>';} ?></span>
-      <?php if($enoughcoins == 1){echo '<li class="w3-padding-16"><span class="w3-xlarge">Enough Coins</li>';} ?></span>
-      <?php if(isset($stakingstatus)){echo '<li class="w3-padding-16"><span class="w3-xlarge">' . $stakingstatus . '</li>';}?></span>
+      <li>
+        test
+      </li>
     </ul>
   </div>
   <hr>
@@ -168,17 +178,19 @@ $getreportedblock = shell_exec('curl ' . $xuez_explorer . '/api/getblockcount');
         <td><b>Address</b></td>
         <td><b>Amount</b></td>
       </tr>
-      <tr>
-        <td><?php echo date('d/m/Y', $obj3[0]->{'timereceived'});?></td>
-        <td><?php echo date('H:i:s', $obj3[0]->{'timereceived'});?></td>
-        <td><?php echo $obj3[0]->{'category'};?></td>
-        <td><?php echo $obj3[0]->{'address'};?></td>
-        <td><?php echo $obj3[0]->{'amount'};?></td>
-      </tr>
+      <?php
+      for ($i = 0; $i < count($obj3); $i++) {
+        echo "<tr>";
+        echo "<td>" . date('d/m/Y', $obj3[0]->{'timereceived'}) . "</td>";
+        echo "<td>" . date('H:i:s', $obj3[0]->{'timereceived'}) . "</td>";
+        echo "<td>" . $obj3[$i]->{'category'} . "</td>";
+        echo "<td>" . $obj3[$i]->{'address'} . "</td>";
+        echo "<td>" . $obj3[$i]->{'amount'} . "</td>";
+        echo "</tr>";
+      }
+       ?>
     </table><br>
-    <button class="w3-button w3-dark-grey">More        <i class="fa fa-arrow-right"></i></button>
   </div>
-  <hr>
   <div class="w3-container">
     <h5>System Info</h5>
 
