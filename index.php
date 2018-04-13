@@ -37,6 +37,7 @@ $enoughcoins = $obj2->{'enoughcoins'};
 
 $listtransactions = shell_exec("sudo " . $xuez_path . "/xuez-cli listtransactions");
 $obj3 = json_decode($listtransactions);
+$tx1 = $obj3->{'category'};
 
 $load1 = shell_exec("uptime | grep -ohe 'load average[s:][: ].*' | awk '{ print $3 }' | sed s/,//g");
 $load2 = shell_exec("uptime | grep -ohe 'load average[s:][: ].*' | awk '{ print $4 }' | sed s/,//g");
@@ -165,19 +166,18 @@ $getreportedblock = shell_exec('curl ' . $xuez_explorer . '/api/getblockcount');
     <h5>Transactions</h5>
     <table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">
       <tr>
-        <td>DATE</td>
-        <td>ADDRESS</td>
-        <td>1000 XUEZ</td>
+        <td><b>Date</b></td>
+        <td><b>Time (UTC)</b></td>
+        <td><b>Category</b></td>
+        <td><b>Address</b></td>
+        <td><b>Amount</b></td>
       </tr>
       <tr>
-        <td>DATE</td>
-        <td>ADDRESS</td>
-        <td>1000 XUEZ</td>
-      </tr>
-      <tr>
-        <td>DATE</td>
-        <td>ADDRESS</td>
-        <td>1000 XUEZ</td>
+        <td><?php echo date('d/m/Y', $obj3[0]->{'timereceived'});?></td>
+        <td><?php echo date('H:i:s', $obj3[0]->{'timereceived'});?></td>
+        <td><?php echo $obj3[0]->{'category'};?></td>
+        <td><?php echo $obj3[0]->{'address'};?></td>
+        <td><?php echo $obj3[0]->{'amount'};?></td>
       </tr>
     </table><br>
     <button class="w3-button w3-dark-grey">More        <i class="fa fa-arrow-right"></i></button>
@@ -217,7 +217,7 @@ $getreportedblock = shell_exec('curl ' . $xuez_explorer . '/api/getblockcount');
 
   <!-- Footer -->
   <footer class="w3-container w3-padding-16 w3-light-grey">
-    <p>Source code available on <a href="#" target="_blank">GitHub</a></p>
+    <p>Source code available on <a href="https://github.com/dirtyak/xuez_monitor" target="_blank">GitHub</a></p>
   </footer>
 
   <!-- End page content -->
