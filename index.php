@@ -5,19 +5,23 @@ $getinfo = shell_exec("sudo " . $xuez_path . "/xuez-cli getinfo");
 $obj = json_decode($getinfo);
 $stakingstatus = $obj->{'staking status'};
 $difficulty = $obj->{'difficulty'};
-$address0 = shell_exec("sudo " . $xuez_path . "/xuez-cli getaccountaddress 0");
 
 $getstakingstatus = shell_exec("sudo " . $xuez_path . "/xuez-cli getstakingstatus");
-$obj2 = json_decode($getstakingstatus);
-$walletunlocked = $obj2->{'walletunlocked'};
-$enoughcoins = $obj2->{'enoughcoins'};
+$stake = json_decode($getstakingstatus);
+$walletunlocked = $stake->{'walletunlocked'};
+$enoughcoins = $stake->{'enoughcoins'};
 
 $getmasternodestatus = shell_exec("sudo " . $xuez_path . "/xuez-cli getmasternodestatus");
 
 $getnetworkinfo = shell_exec("sudo " . $xuez_path . "/xuez-cli getnetworkinfo");
-$obj3 = json_decode($getnetworkinfo);
-$version = $obj3->{'subversion'};
-$ipv4 = $obj3->{'localaddresses'}[0]->{'address'};
+$networkinfo = json_decode($getnetworkinfo);
+$version = $networkinfo->{'subversion'};
+$ipv4 = $networkinfo->{'localaddresses'}[0]->{'address'};
+
+$getmasternodestatus = shell_exec("sudo " . $xuez_path . "/xuez-cli getmasternodestatus");
+$masternodestatus = json_decode($getmasternodestatus);
+$netaddr = $masternodestatus->{'netaddr'};
+$mnaddress = $masternodestatus->{'addr'};
 
 $listtransactions = shell_exec("sudo " . $xuez_path . "/xuez-cli listtransactions");
 $txlist = json_decode($listtransactions);
@@ -25,15 +29,26 @@ $txlist = json_decode($listtransactions);
 $listmasternodes = shell_exec("sudo " . $xuez_path . "/xuez-cli listmasternodes");
 $mnlist = json_decode($listmasternodes);
 
+  for ($i = 0; $i < count($mnlist); $i++) {
+      if($mnlist[$i]->{'addr'} == $mnaddress)
+      {
+        $mnstatus = $mnlist[$i]->{'status'};
+        $mnnetwork = $mnlist[$i]->{'network'};
+        if($mnlist[$i]->{'lastseen'} == 0){$mnlastseen = "Not yet";}else{$mnlastseen = date('d/m/Y H:i:s', $mnlist[$i]->{'lastseen'});}
+        if($mnlist[$i]->{'lastpaid'} == 0){$mnlastpaid = "Not yet";}else{$mnlastpaid = date('d/m/Y H:i:s', $mnlist[$i]->{'lastpaid'});}
+        if($mnlist[$i]->{'activetime'} == 0){$mnactivetime = "Not yet";}else{$mnactivetime = $mnlist[$i]->{'activetime'};}
+      }
+    }
+
 $load1 = shell_exec("uptime | grep -ohe 'load average[s:][: ].*' | awk '{ print $3 }' | sed s/,//g");
 $load2 = shell_exec("uptime | grep -ohe 'load average[s:][: ].*' | awk '{ print $4 }' | sed s/,//g");
 $load3 = shell_exec("uptime | grep -ohe 'load average[s:][: ].*' | awk '{ print $5 }'");
-$loadp1 = $load1 * 100;
-$loadp1 = $loadp1.'%';
-$loadp2 = $load2 * 100;
-$loadp2 = $loadp2.'%';
-$loadp3 = $load3 * 100;
-$loadp3 = $loadp3.'%';
+$loadp1 = ((float)$load1 * 100);
+$loadp1 = ($loadp1.'%');
+$loadp2 = ((float)$load2 * 100);
+$loadp2 = ($loadp2.'%');
+$loadp3 = ((float)$load3 * 100);
+$loadp3 = ($loadp3.'%');
 
 $uptime = shell_exec('uptime -p'); # system uptime
 ?>
@@ -61,18 +76,83 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 <div class="w3-main" style="margin-top:23px;">
 
   <!-- Header -->
-  <header class="w3-container" style="padding-top:22px">
-    <h5><b><i class="fa fa-dashboard"></i> <a href="/">Dashboard</a> | <a href="mnlist.php">Masternodes</a></b></h5>
-  </header>
+<?php include 'header.php'; ?>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
   <div class="w3-row-padding w3-margin-bottom">
     <div id="status" class="w3-quarter">
     </div>
+    <div id="mnstatus" class="w3-quarter">
+    <?php
+    if($mnstatus == "MISSING"){
+      echo '<div class="w3-container w3-red w3-padding-16"><div class="w3-right">';
+      echo '<h3>' . $mnstatus . '</h3>';
+      echo "</div>";
+      echo '<div class="w3-clear"></div>';
+      echo "<h4>Masternode</h4>";
+      echo "</div>";
+    }
+    elseif($mnstatus == "ENABLED"){
+      echo '<div class="w3-container w3-green w3-padding-16"><div class="w3-right">';
+      echo '<h3>Enabled</h3>';
+      echo "</div>";
+      echo '<div class="w3-clear"></div>';
+      echo "<h4>Masternode</h4>";
+      echo "</div>";
+    }
+    ?>
+    </div>
     <div id="connectioncount" class="w3-quarter">
     </div>
     <div id="blockcount" class="w3-quarter">
+    </div>
+      <div id="mnnetwork" class="w3-quarter">
+    <?php
+    if(empty($mnnetwork)){}
+    elseif(!empty($mnnetwork)){
+      echo '<div class="w3-container w3-teal w3-padding-16"><div class="w3-right">';
+      echo '<h3>' . $mnnetwork . '</h3>';
+      echo "</div>";
+      echo '<div class="w3-clear"></div>';
+      echo "<h4>Network</h4>";
+      echo "</div>";
+    }
+
+
+    ?>
+    </div>
+    <div id="activetime" class="w3-quarter">
+    <?php
+    if(empty($mnactivetime)){}
+    elseif(!empty($mnactivetime)){
+      echo '<div class="w3-container w3-purple w3-padding-16"><div class="w3-right">';
+      echo '<h3>' . number_format(($mnactivetime / 86400), 1) . ' days</h3>';
+      echo "</div>";
+      echo '<div class="w3-clear"></div>';
+      echo "<h4>Active</h4>";
+      echo "</div>";}
+    ?>
+    </div>
+    <div id="lastpaid" class="w3-quarter">
+    <?php
+    if($mnlastpaid == 0 && $mnstatus == "ENABLED"){
+      echo '<div class="w3-container w3-orange w3-padding-16"><div class="w3-right">';
+      echo '<h3>' . $mnlastpaid . '</h3>';
+      echo "</div>";
+      echo '<div class="w3-clear"></div>';
+      echo "<h4>Last Paid</h4>";
+      echo "</div>";}
+    elseif(empty($mnlastpaid)){}
+    elseif(!empty($mnlastpaid)){
+      echo '<div class="w3-container w3-green w3-padding-16"><div class="w3-right">';
+      echo '<h3>' . $mnlastpaid . '</h3>';
+      echo "</div>";
+      echo '<div class="w3-clear"></div>';
+      echo "<h4>Last Paid</h4>";
+      echo "</div>";}
+
+    ?>
     </div>
     <div id="balance" class="w3-quarter">
     </div>
@@ -80,22 +160,19 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 
   <?php
     echo '</span>';
-    echo '<div id="address0" class="w3-container">';
+    echo '<div class="w3-container">';
     echo '<ul class="w3-ul w3-card-4">';
 
-    if(isset($address0)){
-      echo '<li class="w3-padding-16 w3-white">';
-      echo '<span class="w3-xlarge">';
-      echo 'Account [0] Address : <tr>' . $address0 . '</tr>';
-      if(!empty($address)){
+    if(!empty($getinfo)){
+      if(!empty($mnaddress)){
         echo '<li class="w3-padding-16 w3-white">';
         echo '<span class="w3-xlarge">';
-        echo 'Masternode Address : <tr>' . $address . '</tr>';
+        echo 'Masternode Address : <tr>' . $mnaddress . '</tr>';
       }
-      else{
+      elseif(empty($mnaddress)){
         echo '<li class="w3-padding-16 w3-orange">';
         echo '<span class="w3-xlarge">';
-        echo 'Masternode Address not found, please fill <b>config.php</b>' . $address . '</tr>';
+        echo 'XUEZ Daemon is running but is not a Masternode';
       }
     }
     else{
@@ -105,7 +182,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
       echo '</br>';
       echo '- This script needs latest <b><a href="https://github.com/XUEZ/xuez/releases">xuez-linux-cli</a></b> !';
       echo '</br>';
-      echo '- Make sure <b>config.php</b> file is filled...';
+      echo '- Make sure <b>config.php</b> is filled...';
       echo '</br>';
       echo '- Run <b>./xuezd</b></br>';
     }
@@ -114,39 +191,27 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     echo '</div>';
   ?>
 
-  <?php if(!empty($address)){
-    for ($i = 0; $i < count($mnlist); $i++) {
-        if($mnlist[$i]->{'addr'} == $address)
-        {
-          echo '<div id="masternode" class="w3-container">';
-          echo '<br>';
-          echo '<h5>Masternode Status</h5>';
-          echo '<ul class="w3-ul w3-card-4 w3-white">';
-          echo '<li class="w3-padding-16"><span class="w3-xlarge">Status : ' . $mnlist[$i]->{'status'} . '</span></li>';
-          echo '<li class="w3-padding-16"><span class="w3-xlarge">Network : ' . $mnlist[$i]->{'network'} . '</span></li>';
-          echo '<li class="w3-padding-16"><span class="w3-xlarge">Last Seen : ' . date('d/m/Y H:i:s', $mnlist[$i]->{'lastseen'}) . '</span></li>';
-          if($mnlist[$i]->{'lastpaid'} == 0){echo '<li class="w3-padding-16"><span class="w3-xlarge">Last Paid : Never</span></li>';}
-          else{echo '<li class="w3-padding-16"><span class="w3-xlarge">Last Paid : ' . date('d/m/Y H:i:s', $mnlist[$i]->{'lastpaid'}) . '</span></li>';}
-          echo '<li class="w3-padding-16"><span class="w3-xlarge">Active Time : ' . $mnlist[$i]->{'activetime'} . '</span></li>';
-          echo '</span>';
-          echo '</span>';
-          echo '<li class="w3-padding-16"><span class="w3-xlarge">' . $stakingstatus . '</li>';
-          echo '</span>';
-          echo '</ul>';
-          echo '</div>';
-        }
-      }
-    }
+  <?php
+  if(!empty($mnstatus)){
+        echo '<div id="masternode" class="w3-container">';
+        echo '<br>';
+        echo '<h3>Masternode Status</h3>';
+        echo '<ul class="w3-ul w3-card-4 w3-white">';
+        echo '<li class="w3-padding-16"><span class="w3-xlarge">Status : ' . $mnstatus . '</span></li>';
+        echo '<li class="w3-padding-16"><span class="w3-xlarge">Last Seen : ' . $mnlastseen . '</span></li>';
+        echo '</span>';
+        echo '</span>';
+        echo '</span>';
+        echo '</ul>';
+        echo '</div>';
+  }
   ?>
-
-
-
 
   <br>
 
   <?php if(isset($txlist)){
 echo '<div id="txlist" class="w3-container">';
-echo   '<h5>Transactions</h5>';
+echo   '<h3>Transactions</h3>';
 echo   '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
 echo     '<tr>';
 echo       '<td><b>Date</b></td>';
@@ -171,9 +236,8 @@ echo '</div>';
 }
 ?>
 
-
   <div id="system" class="w3-container">
-    <h5>System Info</h5>
+    <h3>System Info</h3>
     <p>Host</p>
     <div>
       <div class="w3-container w3-dark-grey w3-padding" ><b><?php echo $ipv4 ?></b></div>
@@ -193,7 +257,7 @@ echo '</div>';
 
   <!-- Footer -->
   <footer class="w3-container w3-padding-16 w3-dark-grey">
-    <h5 class="w3-bottombar w3-border-blue">Support XUEZ</h5>
+    <h3 class="w3-bottombar w3-border-blue">Support XUEZ</h3>
     <p>Source code on <a href="https://github.com/dirtyak/xuez_monitor" target="_blank">GitHub</a></p>
     <p>XUEZ Links :
       <a href="http://xuez.donkeypool.com">Explorer</a> |
@@ -213,9 +277,8 @@ echo '</div>';
     loadlink(); // This will run on page load
     setInterval(function(){
         loadlink() // this will run after every 5 seconds
-    }, 1000);
+    }, <?php echo ($refresh_delay * 1000);?>);
   </script>
-
 
   <!-- End page content -->
 </div>

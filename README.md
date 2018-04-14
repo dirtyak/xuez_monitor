@@ -23,6 +23,8 @@ apt-get install apache2 php
 
 # Important
 - This script will use sudo to execute local commands
+Add this line <pre>www-data ALL=(ALL) NOPASSWD:ALL</pre> Under <pre># User privilege specification</pre>
+ in /etc/sudoers
 - Only output commands are used (getinfo, getblockcount...)
 
 # Example

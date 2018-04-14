@@ -1,5 +1,9 @@
 <?php
-$xuez_path = "/root/XUEZ/"; # Your XUEZ Binary Folder
-$xuez_explorer = "xuez.donkeypool.com"; # Explorer to use
-$address = ""; # Your Masternode Address
+# Your XUEZ Binary Folder (contains xuez-cli)
+$xuez_path = "/root/XUEZ/";
+# Explorer to use
+$xuez_explorer = "xuez.donkeypool.com";
+$refresh_delay = "10"; # How many seconds before data refresh
+### Add your own masternodes in list ###
+$custom_mnlist = array("", "");;
 ?>

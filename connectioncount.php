@@ -3,7 +3,8 @@ include 'config.php';
 
 $getconnectioncount = shell_exec("sudo " . $xuez_path . "/xuez-cli getconnectioncount");
 
-if($getconnectioncount == 0)
+if(empty($getconnectioncount)){}
+elseif($getconnectioncount == 0)
 {echo '<div class="w3-container w3-red w3-padding-16">';}
 elseif($getconnectioncount < 6)
 {echo '<div class="w3-container w3-orange w3-padding-16">';}
