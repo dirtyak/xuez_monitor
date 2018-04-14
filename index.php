@@ -74,41 +74,67 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     <div id="balance" class="w3-quarter">
     </div>
   </div>
-  <div id="address0" class="w3-container">
-    <ul class="w3-ul w3-card-4 w3-white">
-      <?php if(isset($address0)){echo '<li class="w3-padding-16"><span class="w3-xlarge">Random Address (0) : <tr>' . $address0 . '</tr></li>';}?></span>
-    </ul>
-  </div>
-  <div id="staking" class="w3-container">
-    <br>
-    <h5>Staking Status</h5>
 
-    <ul class="w3-ul w3-card-4 w3-white">
-      <?php if(isset($walletunlocked) && $walletunlocked == 1){echo '<li class="w3-padding-16"><span class="w3-xlarge">Wallet Unlocked</li>';}elseif(isset($walletunlocked) && $walletunlocked == 0){echo '<li class="w3-padding-16"><span class="w3-xlarge">Wallet Locked</li>';} ?></span>
-      <?php if(isset($enoughcoins) && $enoughcoins == 1){echo '<li class="w3-padding-16"><span class="w3-xlarge">Enough Coins</li>';}if(isset($enoughcoins) && $enoughcoins == 0){echo '<li class="w3-padding-16"><span class="w3-xlarge">Not Enough Coins</li>';} ?></span>
-      <?php if(isset($stakingstatus)){echo '<li class="w3-padding-16"><span class="w3-xlarge">' . $stakingstatus . '</li>';}?></span>
-    </ul>
-  </div>
+  <?php
+    echo '</span>';
+    echo '<div id="address0" class="w3-container">';
+    echo '<ul class="w3-ul w3-card-4">';
+
+    if(isset($address0)){
+      echo '<li class="w3-padding-16 w3-white">';
+      echo '<span class="w3-xlarge">';
+      echo 'Random Address (0) : <tr>' . $address0 . '</tr>';
+    }
+    else{
+      echo '<li class="w3-padding-16 w3-orange">';
+      echo '<span class="w3-xlarge">';
+      echo 'Your XUEZ node is <b>offline</b>';
+      echo '</br>';
+      echo '- This script needs latest <b><a href="https://github.com/XUEZ/xuez/releases">xuez-linux-cli</a></b> !';
+      echo '</br>';
+      echo '- Make sure <b>config.php</b> file is filled...';
+      echo '</br>';
+      echo '- Run <b>./xuezd</b></br>';
+    }
+    echo '</li>';
+    echo '</ul>';
+    echo '</div>';
+
+  ?>
+
+  <?php if(isset($getstakingstatus)){
+  echo '<div id="staking" class="w3-container">';
+  echo '<br>';
+  echo '<h5>Staking Status</h5>';
+  echo '<ul class="w3-ul w3-card-4 w3-white">';
+  if($walletunlocked == 1){echo '<li class="w3-padding-16"><span class="w3-xlarge">Wallet Unlocked</li>';}
+  elseif($walletunlocked == 0){echo '<li class="w3-padding-16"><span class="w3-xlarge">Wallet Locked</li>';}
+  echo '</span>';
+  if($enoughcoins == 1){echo '<li class="w3-padding-16"><span class="w3-xlarge">Enough Coins</li>';}
+  elseif($enoughcoins == 0){echo '<li class="w3-padding-16"><span class="w3-xlarge">Not Enough Coins</li>';}
+  echo '</span>';
+  echo '<li class="w3-padding-16"><span class="w3-xlarge">' . $stakingstatus . '</li>';
+  echo '</span>';
+  echo '</ul>';
+  echo '</div>';
+  }
+  ?>
+
   <br>
-  <div id="mnstatus" class="w3-container">
-    <h5>Masternode Status</h5>
-    <ul class="w3-ul w3-card-4 w3-white">
-      <?php if(isset($walletunlocked) && $walletunlocked == 1){echo '<li class="w3-padding-16"><span class="w3-xlarge">Wallet Unlocked</li>';}elseif(isset($walletunlocked) && $walletunlocked == 0){echo '<li class="w3-padding-16"><span class="w3-xlarge">Wallet Locked</li>';} ?></span>
-    </ul>
-  </div>
-  <br>
-  <div id="txlist" class="w3-container">
-    <h5>Transactions</h5>
-    <table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">
-      <tr>
-        <td><b>Date</b></td>
-        <td><b>Time (UTC)</b></td>
-        <td><b>Category</b></td>
-        <td><b>Address</b></td>
-        <td><b>Amount</b></td>
-      </tr>
-      <?php
-      for ($i = 0; $i < count($txlist); $i++) {
+
+  <?php if(isset($txlist)){
+echo '<div id="txlist" class="w3-container">';
+echo   '<h5>Transactions</h5>';
+echo   '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
+echo     '<tr>';
+echo       '<td><b>Date</b></td>';
+echo       '<td><b>Time (UTC)</b></td>';
+echo       '<td><b>Category</b></td>';
+echo       '<td><b>Address</b></td>';
+echo       '<td><b>Amount</b></td>';
+echo     '</tr>';
+
+    for ($i = 0; $i < count($txlist); $i++) {
         echo "<tr>";
         echo "<td>" . date('d/m/Y', $txlist[0]->{'timereceived'}) . "</td>";
         echo "<td>" . date('H:i:s', $txlist[0]->{'timereceived'}) . "</td>";
@@ -116,10 +142,14 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
         echo "<td><a href=http://xuez.donkeypool.com/tx/" . $txlist[$i]->{'txid'} . ">" . $txlist[$i]->{'address'} . "</td>";
         echo "<td>" . $txlist[$i]->{'amount'} . "</td>";
         echo "</tr>";
-      }
-       ?>
-    </table><br>
-  </div>
+    }
+
+echo '</table><br>';
+echo '</div>';
+}
+?>
+
+
   <div id="system" class="w3-container">
     <h5>System Info</h5>
     <p>Host</p>
@@ -136,6 +166,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
       <div class="w3-container w3-center w3-padding w3-<?php if((int)$loadp2 <= 33){echo "green";} elseif((int)$loadp2 < 75){echo "orange";} elseif((int)$loadp2 >= 75){echo "red";}?>" style="width:<?php echo $loadp2?>"><b><?php echo $load2?></b></div>
       <div class="w3-container w3-center w3-padding w3-<?php if((int)$loadp3 <= 33){echo "green";} elseif((int)$loadp3 < 75){echo "orange";} elseif((int)$loadp3 >= 75){echo "red";}?>" style="width:<?php echo $loadp3?>"><b><?php echo $load3?></b></div>
     </div>
+  </div>
   <hr>
 
   <!-- Footer -->
