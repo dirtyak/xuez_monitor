@@ -120,7 +120,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
         {
           echo '<div id="masternode" class="w3-container">';
           echo '<br>';
-          echo '<h5>Masternode Status (WORK IN PROGRESS)</h5>';
+          echo '<h5>Masternode Status</h5>';
           echo '<ul class="w3-ul w3-card-4 w3-white">';
           echo '<li class="w3-padding-16"><span class="w3-xlarge">Status : ' . $mnlist[$i]->{'status'} . '</span></li>';
           echo '<li class="w3-padding-16"><span class="w3-xlarge">Network : ' . $mnlist[$i]->{'network'} . '</span></li>';
