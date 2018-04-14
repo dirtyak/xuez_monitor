@@ -22,6 +22,9 @@ $ipv4 = $obj3->{'localaddresses'}[0]->{'address'};
 $listtransactions = shell_exec("sudo " . $xuez_path . "/xuez-cli listtransactions");
 $txlist = json_decode($listtransactions);
 
+$listmasternodes = shell_exec("sudo " . $xuez_path . "/xuez-cli listmasternodes");
+$mnlist = json_decode($listmasternodes);
+
 $load1 = shell_exec("uptime | grep -ohe 'load average[s:][: ].*' | awk '{ print $3 }' | sed s/,//g");
 $load2 = shell_exec("uptime | grep -ohe 'load average[s:][: ].*' | awk '{ print $4 }' | sed s/,//g");
 $load3 = shell_exec("uptime | grep -ohe 'load average[s:][: ].*' | awk '{ print $5 }'");
@@ -59,7 +62,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 
   <!-- Header -->
   <header class="w3-container" style="padding-top:22px">
-    <h5><b><i class="fa fa-dashboard"></i> Dashboard</b></h5>
+    <h5><b><i class="fa fa-dashboard"></i> <a href="/">Dashboard</a> | <a href="mnlist.php">Masternodes</a></b></h5>
   </header>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -83,12 +86,22 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     if(isset($address0)){
       echo '<li class="w3-padding-16 w3-white">';
       echo '<span class="w3-xlarge">';
-      echo 'Random Address (0) : <tr>' . $address0 . '</tr>';
+      echo 'Account [0] Address : <tr>' . $address0 . '</tr>';
+      if(!empty($address)){
+        echo '<li class="w3-padding-16 w3-white">';
+        echo '<span class="w3-xlarge">';
+        echo 'Masternode Address : <tr>' . $address . '</tr>';
+      }
+      else{
+        echo '<li class="w3-padding-16 w3-orange">';
+        echo '<span class="w3-xlarge">';
+        echo 'Masternode Address not found, please fill <b>config.php</b>' . $address . '</tr>';
+      }
     }
     else{
       echo '<li class="w3-padding-16 w3-orange">';
       echo '<span class="w3-xlarge">';
-      echo 'Your XUEZ node is <b>offline</b>';
+      echo 'Your XUEZ node is <b>offline</b> or <b>not found</b>';
       echo '</br>';
       echo '- This script needs latest <b><a href="https://github.com/XUEZ/xuez/releases">xuez-linux-cli</a></b> !';
       echo '</br>';
@@ -99,26 +112,35 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     echo '</li>';
     echo '</ul>';
     echo '</div>';
-
   ?>
 
-  <?php if(isset($getstakingstatus)){
-  echo '<div id="staking" class="w3-container">';
-  echo '<br>';
-  echo '<h5>Staking Status</h5>';
-  echo '<ul class="w3-ul w3-card-4 w3-white">';
-  if($walletunlocked == 1){echo '<li class="w3-padding-16"><span class="w3-xlarge">Wallet Unlocked</li>';}
-  elseif($walletunlocked == 0){echo '<li class="w3-padding-16"><span class="w3-xlarge">Wallet Locked</li>';}
-  echo '</span>';
-  if($enoughcoins == 1){echo '<li class="w3-padding-16"><span class="w3-xlarge">Enough Coins</li>';}
-  elseif($enoughcoins == 0){echo '<li class="w3-padding-16"><span class="w3-xlarge">Not Enough Coins</li>';}
-  echo '</span>';
-  echo '<li class="w3-padding-16"><span class="w3-xlarge">' . $stakingstatus . '</li>';
-  echo '</span>';
-  echo '</ul>';
-  echo '</div>';
-  }
+  <?php if(!empty($address)){
+    for ($i = 0; $i < count($mnlist); $i++) {
+        if($mnlist[$i]->{'addr'} == $address)
+        {
+          echo '<div id="masternode" class="w3-container">';
+          echo '<br>';
+          echo '<h5>Masternode Status (WORK IN PROGRESS)</h5>';
+          echo '<ul class="w3-ul w3-card-4 w3-white">';
+          echo '<li class="w3-padding-16"><span class="w3-xlarge">Status : ' . $mnlist[$i]->{'status'} . '</span></li>';
+          echo '<li class="w3-padding-16"><span class="w3-xlarge">Network : ' . $mnlist[$i]->{'network'} . '</span></li>';
+          echo '<li class="w3-padding-16"><span class="w3-xlarge">Last Seen : ' . date('d/m/Y H:i:s', $mnlist[$i]->{'lastseen'}) . '</span></li>';
+          if($mnlist[$i]->{'lastpaid'} == 0){echo '<li class="w3-padding-16"><span class="w3-xlarge">Last Paid : Never</span></li>';}
+          else{echo '<li class="w3-padding-16"><span class="w3-xlarge">Last Paid : ' . date('d/m/Y H:i:s', $mnlist[$i]->{'lastpaid'}) . '</span></li>';}
+          echo '<li class="w3-padding-16"><span class="w3-xlarge">Active Time : ' . $mnlist[$i]->{'activetime'} . '</span></li>';
+          echo '</span>';
+          echo '</span>';
+          echo '<li class="w3-padding-16"><span class="w3-xlarge">' . $stakingstatus . '</li>';
+          echo '</span>';
+          echo '</ul>';
+          echo '</div>';
+        }
+      }
+    }
   ?>
+
+
+
 
   <br>
 
