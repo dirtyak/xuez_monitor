@@ -34,9 +34,30 @@ $mnlist = json_decode($listmasternodes);
       {
         $mnstatus = $mnlist[$i]->{'status'};
         $mnnetwork = $mnlist[$i]->{'network'};
-        if($mnlist[$i]->{'lastseen'} == 0){$mnlastseen = "Not yet";}else{$mnlastseen = date('d/m/Y H:i:s', $mnlist[$i]->{'lastseen'});}
-        if($mnlist[$i]->{'lastpaid'} == 0){$mnlastpaid = "Not yet";}else{$mnlastpaid = date('d/m/Y H:i:s', $mnlist[$i]->{'lastpaid'});}
-        if($mnlist[$i]->{'activetime'} == 0){$mnactivetime = "Not yet";}else{$mnactivetime = $mnlist[$i]->{'activetime'};}
+
+        if($mnlist[$i]->{'lastseen'} == 0){
+          $mnlastseen = "Not yet";
+        }
+        else{
+          $mnlastseen = date('d/m/Y H:i:s', $mnlist[$i]->{'lastseen'});
+        }
+
+        if($mnlist[$i]->{'lastpaid'} == 0){
+          $mnlastpaid = "Not yet";
+        }
+        else{
+          $lastpaid = $mnlist[$i]->{'lastpaid'};
+          $interval =  time() - $lastpaid ;
+          $sincelastpaid = number_format(($interval / 3600), 0);
+          $mnlastpaid = date('d/m/Y H:i:s', $mnlist[$i]->{'lastpaid'});
+        }
+
+        if($mnlist[$i]->{'activetime'} == 0){
+          $mnactivetime = "Not yet";
+        }
+        else{
+          $mnactivetime = number_format(($mnlist[$i]->{'activetime'} / 86400), 1);
+        }
       }
     }
 
@@ -50,6 +71,7 @@ $loadp2 = ($loadp2.'%');
 $loadp3 = ((float)$load3 * 100);
 $loadp3 = ($loadp3.'%');
 
+$timenow = date('d/m/Y H:i:s', microtime(true));
 $uptime = shell_exec('uptime -p'); # system uptime
 ?>
 
@@ -86,7 +108,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     <div id="mnstatus" class="w3-quarter">
     <?php
     if($mnstatus == "MISSING"){
-      echo '<div class="w3-container w3-red w3-padding-16"><div class="w3-right">';
+      echo '<div class="w3-container w3-border-bottom w3-border-black w3-red w3-padding-16"><div class="w3-right">';
       echo '<h3>' . $mnstatus . '</h3>';
       echo "</div>";
       echo '<div class="w3-clear"></div>';
@@ -94,7 +116,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
       echo "</div>";
     }
     elseif($mnstatus == "ENABLED"){
-      echo '<div class="w3-container w3-green w3-padding-16"><div class="w3-right">';
+      echo '<div class="w3-container w3-border-bottom w3-border-black w3-green w3-padding-16"><div class="w3-right">';
       echo '<h3>Enabled</h3>';
       echo "</div>";
       echo '<div class="w3-clear"></div>';
@@ -108,26 +130,27 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     <div id="blockcount" class="w3-quarter">
     </div>
       <div id="mnnetwork" class="w3-quarter">
+
     <?php
-    if(empty($mnnetwork)){}
+    if(empty($mnnetwork)){
+    }
     elseif(!empty($mnnetwork)){
-      echo '<div class="w3-container w3-teal w3-padding-16"><div class="w3-right">';
+      echo '<div class="w3-container w3-border-bottom w3-border-black w3-teal w3-padding-16"><div class="w3-right">';
       echo '<h3>' . $mnnetwork . '</h3>';
       echo "</div>";
       echo '<div class="w3-clear"></div>';
       echo "<h4>Network</h4>";
       echo "</div>";
     }
-
-
     ?>
+
     </div>
     <div id="activetime" class="w3-quarter">
     <?php
     if(empty($mnactivetime)){}
     elseif(!empty($mnactivetime)){
-      echo '<div class="w3-container w3-purple w3-padding-16"><div class="w3-right">';
-      echo '<h3>' . number_format(($mnactivetime / 86400), 1) . ' days</h3>';
+      echo '<div class="w3-container w3-border-bottom w3-border-black w3-purple w3-padding-16"><div class="w3-right">';
+      echo '<h3>' . $mnactivetime . ' days</h3>';
       echo "</div>";
       echo '<div class="w3-clear"></div>';
       echo "<h4>Active</h4>";
@@ -135,24 +158,23 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     ?>
     </div>
     <div id="lastpaid" class="w3-quarter">
-    <?php
-    if($mnlastpaid == 0 && $mnstatus == "ENABLED"){
-      echo '<div class="w3-container w3-orange w3-padding-16"><div class="w3-right">';
-      echo '<h3>' . $mnlastpaid . '</h3>';
-      echo "</div>";
-      echo '<div class="w3-clear"></div>';
-      echo "<h4>Last Paid</h4>";
-      echo "</div>";}
-    elseif(empty($mnlastpaid)){}
-    elseif(!empty($mnlastpaid)){
-      echo '<div class="w3-container w3-green w3-padding-16"><div class="w3-right">';
-      echo '<h3>' . $mnlastpaid . '</h3>';
-      echo "</div>";
-      echo '<div class="w3-clear"></div>';
-      echo "<h4>Last Paid</h4>";
-      echo "</div>";}
 
+    <?php
+      if(empty($mnlastpaid)){}
+      elseif(!empty($mnlastpaid)){
+      if($sincelastpaid < 24){
+        echo '<div class="w3-container w3-border-bottom w3-border-black w3-green w3-padding-16"><div class="w3-right">';
+      }
+      elseif($sincelastpaid >= 24){
+        echo '<div class="w3-container w3-border-bottom w3-border-black w3-orange w3-padding-16"><div class="w3-right">';
+      }
+      echo '<h3>' . $sincelastpaid . ' hours</h3>';
+      echo "</div>";
+      echo '<div class="w3-clear"></div>';
+      echo "<h4>Last Paid</h4>";
+      echo "</div>";}
     ?>
+
     </div>
     <div id="balance" class="w3-quarter">
     </div>
@@ -198,7 +220,9 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
         echo '<h3>Masternode Status</h3>';
         echo '<ul class="w3-ul w3-card-4 w3-white">';
         echo '<li class="w3-padding-16"><span class="w3-xlarge">Status : ' . $mnstatus . '</span></li>';
-        echo '<li class="w3-padding-16"><span class="w3-xlarge">Last Seen : ' . $mnlastseen . '</span></li>';
+        echo '<li class="w3-padding-16"><span class="w3-xlarge">Time now : ' . $timenow . ' (UTC)</span></li>';
+        echo '<li class="w3-padding-16"><span class="w3-xlarge">Last Seen : ' . $mnlastseen . ' (UTC)</span></li>';
+        echo '<li class="w3-padding-16"><span class="w3-xlarge">Last Paid : ' . $mnlastpaid . ' (UTC)</span></li>';
         echo '</span>';
         echo '</span>';
         echo '</span>';
@@ -210,16 +234,16 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
   <br>
 
   <?php if(isset($txlist)){
-echo '<div id="txlist" class="w3-container">';
-echo   '<h3>Transactions</h3>';
-echo   '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
-echo     '<tr>';
-echo       '<td><b>Date</b></td>';
-echo       '<td><b>Time (UTC)</b></td>';
-echo       '<td><b>Category</b></td>';
-echo       '<td><b>Address</b></td>';
-echo       '<td><b>Amount</b></td>';
-echo     '</tr>';
+    echo '<div id="txlist" class="w3-container">';
+    echo   '<h3>Transactions</h3>';
+    echo   '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
+    echo     '<tr>';
+    echo       '<td><b>Date</b></td>';
+    echo       '<td><b>Time (UTC)</b></td>';
+    echo       '<td><b>Category</b></td>';
+    echo       '<td><b>Address</b></td>';
+    echo       '<td><b>Amount</b></td>';
+    echo     '</tr>';
 
     for ($i = 0; $i < count($txlist); $i++) {
         echo "<tr>";
