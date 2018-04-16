@@ -26,7 +26,6 @@ $masternodestatus = json_decode($getmasternodestatus);
 $netaddr = $masternodestatus->{'netaddr'};
 $mnaddress = $masternodestatus->{'addr'};
 
-$getbalance = shell_exec("sudo curl " . $xuez_explorer . "/ext/getbalance/" . $mnaddress . ""); # asking block height to explorer
 
 $listmasternodes = shell_exec("sudo " . $xuez_path . "/xuez-cli listmasternodes");
 $mnlist = json_decode($listmasternodes);
