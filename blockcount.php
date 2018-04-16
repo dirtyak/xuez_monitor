@@ -2,7 +2,6 @@
 include 'config.php';
 
 $getblockcount = shell_exec("sudo " . $xuez_path . "/xuez-cli getblockcount");
-$getreportedblock = shell_exec('curl ' . $xuez_explorer . '/api/getblockcount'); # asking block height to explorer
 
 if(empty($getblockcount)){
 }
