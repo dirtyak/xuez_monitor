@@ -5,10 +5,15 @@ It uses apache, php and curl.
 
 # Requirements
 
+- Have a XUEZ node running
 - Install dependencies (as root):
 <pre>
-apt-get install apache2 libapache2-mod-php php unzip php-curl
+apt-get install apache2 libapache2-mod-php php php-curl unzip
 service apache2 restart
+</pre>
+- Open your firewall port 80
+<pre>
+ufw allow 80/tcp
 </pre>
 
 # Install
@@ -34,7 +39,7 @@ nano /var/www/hmtl/config.php
 - Explorer links
 
 # Important
-- Fill config.php
+- Edit config.php (rpc_user & rpc_password)
 - Xuez-monitor now uses curl to make RPC request, it can be done locally or remotely and is much safer than older method (php shell_exec)
 
 # Example
