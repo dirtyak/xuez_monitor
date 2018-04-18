@@ -115,14 +115,14 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-  <div class="w3-row-padding w3-margin-bottom">
+    <div class="w3-row-padding w3-margin-bottom">
     <div id="status" class="w3-quarter">
     </div>
     <div id="mnstatus" class="w3-quarter">
 
     <?php
     if($mnstatus == "MISSING"){
-      echo '<div class="w3-container w3-border-bottom w3-border-black w3-red w3-padding-16"><div class="w3-right">';
+      echo '<div class="w3-container w3-border-bottom w3-border-white w3-red w3-padding-16"><div class="w3-right">';
       echo '<h3>' . $mnstatus . '</h3>';
       echo "</div>";
       echo '<div class="w3-clear"></div>';
@@ -130,7 +130,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
       echo "</div>";
     }
     elseif($mnstatus == "ENABLED"){
-      echo '<div class="w3-container w3-border-bottom w3-border-black w3-green w3-padding-16"><div class="w3-right">';
+      echo '<div class="w3-container w3-border-bottom w3-border-white w3-green w3-padding-16"><div class="w3-right">';
       echo '<h3>Enabled</h3>';
       echo "</div>";
       echo '<div class="w3-clear"></div>';
@@ -144,13 +144,13 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     </div>
     <div id="blockcount" class="w3-quarter">
     </div>
-      <div id="mnnetwork" class="w3-quarter">
+    <div id="mnnetwork" class="w3-quarter">
 
     <?php
     if(empty($mnnetwork)){
     }
     elseif(!empty($mnnetwork)){
-      echo '<div class="w3-container w3-border-bottom w3-border-black w3-teal w3-padding-16"><div class="w3-right">';
+      echo '<div class="w3-container w3-border-bottom w3-border-white w3-teal w3-padding-16"><div class="w3-right">';
       echo '<h3>' . $mnnetwork . '</h3>';
       echo "</div>";
       echo '<div class="w3-clear"></div>';
@@ -165,7 +165,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     <?php
     if(!empty($mnactivetime)){
       if($mnactivetime <= 1){
-        echo '<div class="w3-container w3-border-bottom w3-border-black w3-purple w3-padding-16"><div class="w3-right">';
+        echo '<div class="w3-container w3-border-bottom w3-border-white w3-purple w3-padding-16"><div class="w3-right">';
         echo '<h3>Fresh</h3>';
         echo "</div>";
         echo '<div class="w3-clear"></div>';
@@ -173,7 +173,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
         echo "</div>";
       }
       elseif($mnactivetime > 1){
-        echo '<div class="w3-container w3-border-bottom w3-border-black w3-purple w3-padding-16"><div class="w3-right">';
+        echo '<div class="w3-container w3-border-bottom w3-border-white w3-purple w3-padding-16"><div class="w3-right">';
         echo '<h3>' . $mnactivetime . ' days</h3>';
         echo "</div>";
         echo '<div class="w3-clear"></div>';
@@ -190,15 +190,15 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     <?php
       if(!empty($mnlastpaid)){
         if($sincelastpaid <= 1){
-          echo '<div class="w3-container w3-border-bottom w3-border-black w3-blue w3-padding-16"><div class="w3-right">';
-          echo '<h3>Last H</h3>';
+          echo '<div class="w3-container w3-border-bottom w3-border-white w3-blue w3-padding-16"><div class="w3-right">';
+          echo '<h3>< 1 hour</h3>';
         }
         elseif($sincelastpaid < 24){
-          echo '<div class="w3-container w3-border-bottom w3-border-black w3-green w3-padding-16"><div class="w3-right">';
+          echo '<div class="w3-container w3-border-bottom w3-border-white w3-green w3-padding-16"><div class="w3-right">';
           echo '<h3>' . $sincelastpaid . ' hours</h3>';
         }
         elseif($sincelastpaid >= 24){
-          echo '<div class="w3-container w3-border-bottom w3-border-black w3-orange w3-padding-16"><div class="w3-right">';
+          echo '<div class="w3-container w3-border-bottom w3-border-white w3-orange w3-padding-16"><div class="w3-right">';
           echo '<h3>' . $sincelastpaid . ' hours</h3>';
         }
       echo "</div>";
@@ -211,7 +211,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     </div>
     <div id="balance" class="w3-quarter">
     </div>
-  </div>
+    </div>
 
   <?php
     echo '</span>';
@@ -222,7 +222,8 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
       if(!empty($mnaddress)){
         echo '<li class="w3-padding-16 w3-white">';
         echo '<span class="w3-xlarge">';
-        echo 'Masternode Address : <tr>' . $mnaddress . '</tr>';
+        echo 'Masternode Address : <tr><a href=http://' . $xuez_explorer . '/address/' . $mnaddress . '>' . $mnaddress . '</a></tr>';
+        echo "<td><a href=http://" . $xuez_explorer . "/address/" . $mnlist[$i]->{'addr'} .">" . $mnlist[$i]->{'addr'} . "</a></td>";
       }
       elseif(empty($mnaddress)){
         echo '<li class="w3-padding-16 w3-orange">';
@@ -233,20 +234,18 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     else{
       echo '<li class="w3-padding-16 w3-orange">';
       echo '<span class="w3-xlarge">';
-      echo 'Your XUEZ node is <b>offline</b> or <b>not found</b>';
+      echo 'Cannot connect to XUEZ node [url=' . $rpc_url . '] [port=' . $rpc_port . ']';
       echo '</br>';
-      echo '- This script needs latest <b><a href="https://github.com/XUEZ/xuez/releases">xuez-linux-cli</a></b> !';
+      echo '- Edit <b>rpc_user</b> and <b>rpc_password</b> in <b>config.php</b> (use the same credentials as xuez.conf)';
       echo '</br>';
-      echo '- Make sure <b>config.php</b> is filled...';
-      echo '</br>';
-      echo '- Run <b>./xuezd</b></br>';
+      echo '- Maybe your xuez daemon is not running';
     }
     echo '</li>';
     echo '</ul>';
     echo '</div>';
-  ?>
 
-  <?php
+
+
   if(!empty($mnstatus)){
         echo '<div id="masternode" class="w3-container">';
         echo '<br>';
@@ -263,17 +262,8 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
         echo '</div>';
   }
   ?>
-
-  <br>
-
-  <div id="system" class="w3-container">
-    <h3>Network info</h3>
-    <p>Host</p>
-    <div>
-      <div class="w3-container w3-dark-grey w3-padding" ><b><?php echo $ipv4 ?></b></div>
-    </div>
-  </div>
   <hr>
+
 
   <!-- Footer -->
   <footer class="w3-container w3-padding-16 w3-dark-grey">

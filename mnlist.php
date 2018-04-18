@@ -46,11 +46,12 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if (empty($_POST["address"])) {
-    $addressErr = "Address is required";
-  } else {
+    $addressErr = "<b>Address is required</b>";
+  }
+  else {
     $address = test_input($_POST["address"]);
     if (!preg_match("/^[a-zA-Z0-9 ]*$/",$address)) {
-      $addressErr = "Bad address";
+      $addressErr = "<b>Bad address</b>";
     }
   }
 }
@@ -90,7 +91,7 @@ for ($i = 0; $i < count($mnlist); $i++) {
     echo   '</tr>';    echo "<tr>";
     echo "<td>" . $mnlist[$i]->{'rank'} . "</td>";
     echo "<td>" . $mnlist[$i]->{'status'} . "</td>";
-    echo "<td>" . $mnlist[$i]->{'addr'} . "</td>";
+    echo "<td><a href=http://" . $xuez_explorer . "/address/" . $mnlist[$i]->{'addr'} .">" . $mnlist[$i]->{'addr'} . "</a></td>";
     echo "<td>" . date($date_format, $mnlist[$i]->{'lastseen'}) . "</td>";
 
     if($mnlist[$i]->{'lastpaid'} == 0){echo "<td>Not yet</td>";}
@@ -127,10 +128,14 @@ echo '</tr>';
         echo "<tr>";
         echo "<td>" . $mnlist[$i]->{'rank'} . "</td>";
         echo "<td>" . $mnlist[$i]->{'status'} . "</td>";
-        echo "<td>" . $mnlist[$i]->{'addr'} . "</td>";
+        echo "<td><a href=http://" . $xuez_explorer . "/address/" . $mnlist[$i]->{'addr'} .">" . $mnlist[$i]->{'addr'} . "</a></td>";
         echo "<td>" . date($date_format, $mnlist[$i]->{'lastseen'}) . "</td>";
-        if($mnlist[$i]->{'lastpaid'} == 0){echo "<td>Not yet</td>";}
-        else{echo "<td>" . date($date_format, $mnlist[$i]->{'lastpaid'}) . "</td>";}
+        if($mnlist[$i]->{'lastpaid'} == 0){
+          echo "<td>Not yet</td>";
+        }
+        else{
+          echo "<td>" . date($date_format, $mnlist[$i]->{'lastpaid'}) . "</td>";
+        }
         echo "<td>" . number_format(($mnlist[$i]->{'activetime'} / 86400), 0) . " days</td>";
         echo "</tr>";
       }
@@ -138,13 +143,13 @@ echo '</tr>';
   echo "</table>";
   echo "</div>";
 }
-elseif(empty($custom_mnlist[0])){
+else{
   echo '<div class="w3-container w3-padding">';
   echo '<table>';
   echo "<h4>My Masternodes :</h4>";
   echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-orange">';
   echo '<tr>';
-  echo '<td><b>Add your own masternodes addresses in config.php $custom_mnlist</b></td>';
+  echo '<td>Make your own list by adding each addresses in <b>config.php</b>:<br><b>$custom_mnlist = array("ADDR1", "ADDR2", "ADDR3");</b></td>';
   echo '</tr>';
   echo "</table>";
   echo "</div>";
@@ -154,9 +159,9 @@ elseif(empty($custom_mnlist[0])){
 
 
 
-<?php if(isset($mnlist)){
+<?php if(!empty($mnlist)){
 echo '<div id="mnlist" class="w3-container">';
-echo   '<h4>Masternodes List</h4>';
+echo   '<h4>All Masternodes :</h4>';
 echo   '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
 echo     '<tr>';
 echo       '<td><b>Rank</b></td>';
@@ -171,7 +176,7 @@ echo     '</tr>';
         echo "<tr>";
         echo "<td>" . $mnlist[$i]->{'rank'} . "</td>";
         echo "<td>" . $mnlist[$i]->{'status'} . "</td>";
-        echo "<td>" . $mnlist[$i]->{'addr'} . "</td>";
+        echo "<td><a href=http://" . $xuez_explorer . "/address/" . $mnlist[$i]->{'addr'} .">" . $mnlist[$i]->{'addr'} . "</a></td>";
         echo "<td>" . date($date_format, $mnlist[$i]->{'lastseen'}) . "</td>";
         if($mnlist[$i]->{'lastpaid'} == 0){echo "<td>Not yet</td>";}
         else{echo "<td>" . date($date_format, $mnlist[$i]->{'lastpaid'}) . "</td>";}

@@ -1,7 +1,7 @@
 <?php
 ########## CHANGE THIS ##################################
 $rpc_user = "xuezrpc";
-$rpc_password = "Dt9Sz58ReHfAe7Ndg4pyp4rsTdXX8Hepn8Py1DDAckoV";
+$rpc_password = "your_long_xuez_rpc_password";
 
 ########## (OPTIONS) #################################
 $rpc_url = "localhost"; # Default : localhost
@@ -11,5 +11,5 @@ $date_format = 'm/d/Y H:i:s'; # How to format dates
 $xuez_explorer = "xuez.donkeypool.com"; # Optional
 
 #### MORE MASTERNODES ADDRESSES ###
-$custom_mnlist = array("ADDR1", "ADDR2", "ADDR3");
+$custom_mnlist = array("", "", "");
 ?>
