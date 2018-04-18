@@ -1,8 +1,19 @@
 <?php
 include 'config.php';
 
-$listmasternodes = shell_exec("sudo " . $xuez_path . "/xuez-cli listmasternodes");
-$mnlist = json_decode($listmasternodes);
+$curl = curl_init();
+curl_setopt_array($curl, array(
+  CURLOPT_PORT => $rpc_port,
+  CURLOPT_URL => $rpc_url . ":" . $rpc_port,
+  CURLOPT_USERPWD => $rpc_user . ":" . $rpc_password,
+  CURLOPT_CUSTOMREQUEST => "POST",
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_POSTFIELDS => "{\n\"jsonrpc\": \"1.0\",\n\"id\":\"curltest\",\n\"method\": \"listmasternodes\"\n}",
+));
+$listmasternodes = curl_exec($curl);
+$listmasternodes = json_decode($listmasternodes);
+$mnlist = $listmasternodes->{'result'};
+curl_close($curl);
 
 ?>
 
@@ -23,7 +34,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 <!-- Top container -->
 <div class="w3-bar w3-top w3-black w3-large" style="z-index:4">
 
-  <span class="w3-bar-item w3-right"><b>xuez_monitor</b> | <?php print $version;?></span>
+  <span class="w3-bar-item w3-right"><b>xuez_monitor</b> | <?php print $version; ?></span>
 </div>
 
 <!-- !PAGE CONTENT! -->
@@ -54,14 +65,15 @@ function test_input($data) {
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
   <div class="w3-container w3-padding">
     <h4>Check Masternode</h4>
-    Address : <input type="text" name="address" size="42" class="w3-border w3-padding" value="<?php echo $address ?>">
-    <span class="error">* <?php echo $addressErr;?></span>
+    Address : <input type="text" name="address" size="42" class="w3-border w3-padding" value="<?php echo $address; ?>">
+    <span class="error">*</span>
     <button type="submit" name="submit" value="Submit" class="w3-button w3-dark-grey">Find &nbsp;<i class="fa fa-arrow-right"></i></button>
+    <?php echo $addressErr;?>
   </div>
 </form>
 
 <?php
-if(isset($_POST["address"])){
+if(!empty($_POST["address"])){
 echo '<div class="w3-container w3-padding">';
 echo "<h4>Masternode Found:</h4>";
 for ($i = 0; $i < count($mnlist); $i++) {
@@ -79,10 +91,10 @@ for ($i = 0; $i < count($mnlist); $i++) {
     echo "<td>" . $mnlist[$i]->{'rank'} . "</td>";
     echo "<td>" . $mnlist[$i]->{'status'} . "</td>";
     echo "<td>" . $mnlist[$i]->{'addr'} . "</td>";
-    echo "<td>" . date('d/m/Y H:i:s', $mnlist[$i]->{'lastseen'}) . "</td>";
+    echo "<td>" . date($date_format, $mnlist[$i]->{'lastseen'}) . "</td>";
 
     if($mnlist[$i]->{'lastpaid'} == 0){echo "<td>Not yet</td>";}
-    else{echo "<td>" . date('d/m/Y H:i:s', $mnlist[$i]->{'lastpaid'}) . "</td>";}
+    else{echo "<td>" . date($date_format, $mnlist[$i]->{'lastpaid'}) . "</td>";}
 
     echo "<td>" . number_format(($mnlist[$i]->{'activetime'} / 86400), 0) . " days</td>";
     echo "</tr>";
@@ -116,9 +128,9 @@ echo '</tr>';
         echo "<td>" . $mnlist[$i]->{'rank'} . "</td>";
         echo "<td>" . $mnlist[$i]->{'status'} . "</td>";
         echo "<td>" . $mnlist[$i]->{'addr'} . "</td>";
-        echo "<td>" . date('d/m/Y H:i:s', $mnlist[$i]->{'lastseen'}) . "</td>";
+        echo "<td>" . date($date_format, $mnlist[$i]->{'lastseen'}) . "</td>";
         if($mnlist[$i]->{'lastpaid'} == 0){echo "<td>Not yet</td>";}
-        else{echo "<td>" . date('d/m/Y H:i:s', $mnlist[$i]->{'lastpaid'}) . "</td>";}
+        else{echo "<td>" . date($date_format, $mnlist[$i]->{'lastpaid'}) . "</td>";}
         echo "<td>" . number_format(($mnlist[$i]->{'activetime'} / 86400), 0) . " days</td>";
         echo "</tr>";
       }
@@ -160,9 +172,9 @@ echo     '</tr>';
         echo "<td>" . $mnlist[$i]->{'rank'} . "</td>";
         echo "<td>" . $mnlist[$i]->{'status'} . "</td>";
         echo "<td>" . $mnlist[$i]->{'addr'} . "</td>";
-        echo "<td>" . date('d/m/Y H:i:s', $mnlist[$i]->{'lastseen'}) . "</td>";
+        echo "<td>" . date($date_format, $mnlist[$i]->{'lastseen'}) . "</td>";
         if($mnlist[$i]->{'lastpaid'} == 0){echo "<td>Not yet</td>";}
-        else{echo "<td>" . date('d/m/Y H:i:s', $mnlist[$i]->{'lastpaid'}) . "</td>";}
+        else{echo "<td>" . date($date_format, $mnlist[$i]->{'lastpaid'}) . "</td>";}
         echo "<td>" . number_format(($mnlist[$i]->{'activetime'} / 86400), 0) . " days</td>";
         echo "</tr>";
     }

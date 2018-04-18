@@ -1,34 +1,55 @@
 <?php
 include 'config.php';
 
-
-$getinfo = shell_exec("sudo " . $xuez_path . "/xuez-cli getinfo");
-$obj = json_decode($getinfo);
-$stakingstatus = $obj->{'staking status'};
-$difficulty = $obj->{'difficulty'};
-
-$getreportedblock = shell_exec('curl ' . $xuez_explorer . '/api/getblockcount'); # asking block height to explorer
-
-$getstakingstatus = shell_exec("sudo " . $xuez_path . "/xuez-cli getstakingstatus");
-$stake = json_decode($getstakingstatus);
-$walletunlocked = $stake->{'walletunlocked'};
-$enoughcoins = $stake->{'enoughcoins'};
-
-$getmasternodestatus = shell_exec("sudo " . $xuez_path . "/xuez-cli getmasternodestatus");
-
-$getnetworkinfo = shell_exec("sudo " . $xuez_path . "/xuez-cli getnetworkinfo");
-$networkinfo = json_decode($getnetworkinfo);
+$curl = curl_init();
+curl_setopt_array($curl, array(
+  CURLOPT_PORT => $rpc_port,
+  CURLOPT_URL => $rpc_url . ":" . $rpc_port,
+  CURLOPT_USERPWD => $rpc_user . ":" . $rpc_password,
+  CURLOPT_CUSTOMREQUEST => "POST",
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_POSTFIELDS => "{\n\"jsonrpc\": \"1.0\",\n\"id\":\"curltest\",\n\"method\": \"getnetworkinfo\"\n}",
+));
+$getnetworkinfo = curl_exec($curl);
+$getnetworkinfo = json_decode($getnetworkinfo);
+$networkinfo = $getnetworkinfo->{'result'};
 $version = $networkinfo->{'subversion'};
 $ipv4 = $networkinfo->{'localaddresses'}[0]->{'address'};
+curl_close($curl);
 
-$getmasternodestatus = shell_exec("sudo " . $xuez_path . "/xuez-cli getmasternodestatus");
-$masternodestatus = json_decode($getmasternodestatus);
-$netaddr = $masternodestatus->{'netaddr'};
+
+
+$curl = curl_init();
+curl_setopt_array($curl, array(
+  CURLOPT_PORT => $rpc_port,
+  CURLOPT_URL => $rpc_url . ":" . $rpc_port,
+  CURLOPT_USERPWD => $rpc_user . ":" . $rpc_password,
+  CURLOPT_CUSTOMREQUEST => "POST",
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_POSTFIELDS => "{\n\"jsonrpc\": \"1.0\",\n\"id\":\"curltest\",\n\"method\": \"getmasternodestatus\"\n}",
+));
+$getmasternodestatus = curl_exec($curl);
+$getmasternodestatus = json_decode($getmasternodestatus);
+$masternodestatus = $getmasternodestatus->{'result'};
 $mnaddress = $masternodestatus->{'addr'};
+curl_close($curl);
 
 
-$listmasternodes = shell_exec("sudo " . $xuez_path . "/xuez-cli listmasternodes");
-$mnlist = json_decode($listmasternodes);
+
+$curl = curl_init();
+curl_setopt_array($curl, array(
+  CURLOPT_PORT => $rpc_port,
+  CURLOPT_URL => $rpc_url . ":" . $rpc_port,
+  CURLOPT_USERPWD => $rpc_user . ":" . $rpc_password,
+  CURLOPT_CUSTOMREQUEST => "POST",
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_POSTFIELDS => "{\n\"jsonrpc\": \"1.0\",\n\"id\":\"curltest\",\n\"method\": \"listmasternodes\"\n}",
+));
+$listmasternodes = curl_exec($curl);
+$listmasternodes = json_decode($listmasternodes);
+$mnlist = $listmasternodes->{'result'};
+curl_close($curl);
+
 
   for ($i = 0; $i < count($mnlist); $i++) {
       if($mnlist[$i]->{'addr'} == $mnaddress)
@@ -40,7 +61,7 @@ $mnlist = json_decode($listmasternodes);
           $mnlastseen = "Not yet";
         }
         else{
-          $mnlastseen = date('d/m/Y H:i:s', $mnlist[$i]->{'lastseen'});
+          $mnlastseen = date($date_format, $mnlist[$i]->{'lastseen'});
         }
 
         if($mnlist[$i]->{'lastpaid'} == 0){
@@ -50,8 +71,8 @@ $mnlist = json_decode($listmasternodes);
           $lastpaid = $mnlist[$i]->{'lastpaid'};
           $interval =  time() - $lastpaid ;
           $sincelastpaid = number_format(($interval / 3600), 0);
-          $mnlastpaid = date('d/m/Y H:i:s', $mnlist[$i]->{'lastpaid'});
-          $mnlastpaid = date('d/m/Y H:i:s', $mnlist[$i]->{'lastpaid'});
+          $mnlastpaid = date($date_format, $mnlist[$i]->{'lastpaid'});
+          $mnlastpaid = date($date_format, $mnlist[$i]->{'lastpaid'});
         }
 
         if($mnlist[$i]->{'activetime'} == 0){
@@ -63,18 +84,8 @@ $mnlist = json_decode($listmasternodes);
       }
     }
 
-$load1 = shell_exec("uptime | grep -ohe 'load average[s:][: ].*' | awk '{ print $3 }' | sed s/,//g");
-$load2 = shell_exec("uptime | grep -ohe 'load average[s:][: ].*' | awk '{ print $4 }' | sed s/,//g");
-$load3 = shell_exec("uptime | grep -ohe 'load average[s:][: ].*' | awk '{ print $5 }'");
-$loadp1 = ((float)$load1 * 100);
-$loadp1 = ($loadp1.'%');
-$loadp2 = ((float)$load2 * 100);
-$loadp2 = ($loadp2.'%');
-$loadp3 = ((float)$load3 * 100);
-$loadp3 = ($loadp3.'%');
 
-$timenow = date('d/m/Y H:i:s', microtime(true));
-$uptime = shell_exec('uptime -p'); # system uptime
+$timenow = date($date_format, microtime(true));
 ?>
 
 <!DOCTYPE html>
@@ -207,7 +218,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     echo '<div class="w3-container">';
     echo '<ul class="w3-ul w3-card-4">';
 
-    if(!empty($getinfo)){
+    if(!empty($getnetworkinfo)){
       if(!empty($mnaddress)){
         echo '<li class="w3-padding-16 w3-white">';
         echo '<span class="w3-xlarge">';
@@ -256,20 +267,10 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
   <br>
 
   <div id="system" class="w3-container">
-    <h3>System Info</h3>
+    <h3>Network info</h3>
     <p>Host</p>
     <div>
       <div class="w3-container w3-dark-grey w3-padding" ><b><?php echo $ipv4 ?></b></div>
-    </div>
-    <p>Uptime</p>
-    <div>
-      <div class="w3-container w3-dark-grey w3-padding" ><b><?php $uptime = shell_exec('uptime -p'); echo $uptime?></b></div>
-    </div>
-    <p>Load Average (1m / 5m / 15m)</p>
-    <div class="w3-dark-grey">
-      <div class="w3-container w3-center w3-padding w3-<?php if((int)$loadp1 <= 33){echo "green";} elseif((int)$loadp1 < 75){echo "orange";} elseif((int)$loadp1 >= 75){echo "red";}?>" style="width:<?php echo $loadp1?>"><b><?php echo $load1?></b></div>
-      <div class="w3-container w3-center w3-padding w3-<?php if((int)$loadp2 <= 33){echo "green";} elseif((int)$loadp2 < 75){echo "orange";} elseif((int)$loadp2 >= 75){echo "red";}?>" style="width:<?php echo $loadp2?>"><b><?php echo $load2?></b></div>
-      <div class="w3-container w3-center w3-padding w3-<?php if((int)$loadp3 <= 33){echo "green";} elseif((int)$loadp3 < 75){echo "orange";} elseif((int)$loadp3 >= 75){echo "red";}?>" style="width:<?php echo $loadp3?>"><b><?php echo $load3?></b></div>
     </div>
   </div>
   <hr>

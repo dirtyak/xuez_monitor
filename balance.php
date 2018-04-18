@@ -1,13 +1,38 @@
 <?php
 include 'config.php';
 
-$getmasternodestatus = shell_exec("sudo " . $xuez_path . "/xuez-cli getmasternodestatus");
+$curl = curl_init();
+curl_setopt_array($curl, array(
+  CURLOPT_PORT => $rpc_port,
+  CURLOPT_URL => $rpc_url . ":" . $rpc_port,
+  CURLOPT_USERPWD => $rpc_user . ":" . $rpc_password,
+  CURLOPT_CUSTOMREQUEST => "POST",
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_POSTFIELDS => "{\n\"jsonrpc\": \"1.0\",\n\"id\":\"curltest\",\n\"method\": \"getmasternodestatus\"\n}",
+));
+$getmasternodestatus = curl_exec($curl);
 $masternodestatus = json_decode($getmasternodestatus);
-$mnaddress = $masternodestatus->{'addr'};
+$mnaddress = $masternodestatus->{'result'}->{'addr'};
+curl_close($curl);
+
+
+$curl2 = curl_init();
+curl_setopt_array($curl2, array(
+  CURLOPT_PORT => $rpc_port,
+  CURLOPT_URL => $rpc_url . ":" . $rpc_port,
+  CURLOPT_USERPWD => $rpc_user . ":" . $rpc_password,
+  CURLOPT_CUSTOMREQUEST => "POST",
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_POSTFIELDS => "{\n\"jsonrpc\": \"1.0\",\n\"id\":\"curltest\",\n\"method\": \"listaddressgroupings\"\n}",
+));
+$trygetbalance = curl_exec($curl2);
+curl_close($curl2);
+
+$obj = json_decode($trygetbalance);
+$obj = $obj->{'result'};
+
 
 if(!empty($mnaddress)){
-  $trygetbalance = shell_exec("sudo " . $xuez_path . "/xuez-cli listaddressgroupings");
-  $obj = json_decode($trygetbalance);
   for ($i = 0; $i < count($obj); $i++) {
     if($obj[$i][0][0] == ($mnaddress))
     {
@@ -26,7 +51,17 @@ if(!empty($mnaddress)){
     echo '</div>';
   }
   elseif(empty($getbalance)){
-    shell_exec("sudo " . $xuez_path . "/xuez-cli getaccount " . $mnaddress);
+    $curl = curl_init();
+    curl_setopt_array($curl, array(
+      CURLOPT_PORT => $rpc_port,
+      CURLOPT_URL => $rpc_url . ":" . $rpc_port,
+      CURLOPT_USERPWD => $rpc_user . ":" . $rpc_password,
+      CURLOPT_CUSTOMREQUEST => "POST",
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_POSTFIELDS => "{\n\"jsonrpc\": \"1.0\",\n\"id\":\"curltest\",\n\"method\": \"getaccount $mnaddress\"\n}",
+    ));
+    $getaccount = curl_exec($curl);
+    curl_close($curl);
   }
 }
 ?>
