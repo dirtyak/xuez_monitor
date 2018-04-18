@@ -1,9 +1,11 @@
 <?php
-$xuez_path = "/root/XUEZ/"; # Your XUEZ Binary Folder (contains xuez-cli)
 
-# RPC DETAILS
+# RPC DETAILS (MUST BE SAME AS XUEZ.CONF)
 $rpc_user = "xuezrpc";
 $rpc_password = "Dt9Sz58ReHfAe7Ndg4pyp4rsTdXX8Hepn8Py1DDAckoV";
+
+# RPC DETAILS (CHANGE IF XUEZ HOSTED REMOTELY)
+# MAKE SURE TO USE SAME CONFIG AS XUEZ.CONF
 $rpc_url = "localhost";
 $rpc_port = "41799";
 

@@ -11,7 +11,7 @@ tar zxvf xuez-linux-cli-1017.tgz
 </pre>
 - Install dependencies (as root):
 <pre>
-apt-get install apache2 php7.1 php7.1-curl
+apt-get install apache2 libapache2-mod-php php php-curl
 service apache2 restart
 </pre>
 - Download and put php files in <b>/var/www/html</b> (default apache2 path) :
