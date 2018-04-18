@@ -1,8 +1,8 @@
 # xuez-monitor
 
-PHP script designed to monitor XUEZ CLI daemon on local linux
+PHP script designed to monitor XUEZ CLI daemon and masternodes
 
-# How to instal
+# How to install
 
 - XUEZ CLI Linux Wallet https://github.com/XUEZ/xuez/releases
 <pre>
