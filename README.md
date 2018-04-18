@@ -2,7 +2,7 @@
 
 PHP script designed to monitor XUEZ CLI daemon on local linux
 
-# Requirements
+# How to instal
 
 - XUEZ CLI Linux Wallet https://github.com/XUEZ/xuez/releases
 <pre>
