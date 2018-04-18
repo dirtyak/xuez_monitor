@@ -11,7 +11,7 @@ tar zxvf xuez-1.0.0-linux-cli.tgz
 </pre>
 - Apache2 and php running :
 <pre>
-apt-get install apache2 php
+apt-get install apache2 php php-curl
 </pre>
 
 # Features
@@ -22,10 +22,8 @@ apt-get install apache2 php
 - Explorer links
 
 # Important
-- This script will use sudo to execute local commands
-Add this line <pre>www-data ALL=(ALL) NOPASSWD:ALL</pre> Under <pre># User privilege specification</pre>
- in /etc/sudoers
-- Only output commands are used (getinfo, getblockcount...)
+- Fill config.php
+- Xuez-monitor now uses curl to make RPC request, it can be done locally or remotely and is much safer than older method (php shell_exec)
 
 # Example
 - You can see it running : http://45.77.53.110/
