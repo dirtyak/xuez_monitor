@@ -7,11 +7,18 @@ PHP script designed to monitor XUEZ CLI daemon on local linux
 - XUEZ CLI Linux Wallet https://github.com/XUEZ/xuez/releases
 <pre>
 wget https://github.com/XUEZ/xuez/releases/download/1.0.1.7/xuez-linux-cli-1017.tgz
-tar zxvf xuez-1.0.0-linux-cli.tgz
+tar zxvf xuez-linux-cli-1017.tgz
 </pre>
-- Apache2 and php running :
+- Install apache2 and php :
 <pre>
 apt-get install apache2 php php-curl
+</pre>
+- Download and put php files in <b>/var/www/html</b> (default apache2 path) :
+<pre>
+cd /var/www/html # Default apache2 server path
+wget https://github.com/dirtyak/xuez_monitor/archive/master.zip
+unzip master.zip
+rm master.zip # We don't need that anymore
 </pre>
 
 # Features
