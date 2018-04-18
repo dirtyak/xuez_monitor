@@ -9,9 +9,10 @@ PHP script designed to monitor XUEZ CLI daemon and masternodes
 wget https://github.com/XUEZ/xuez/releases/download/1.0.1.7/xuez-linux-cli-1017.tgz
 tar zxvf xuez-linux-cli-1017.tgz
 </pre>
-- Install apache2 and php :
+- Install dependencies (as root):
 <pre>
-apt-get install apache2 php php-curl
+apt-get install apache2 php7.1 php7.1-curl
+service apache2 restart
 </pre>
 - Download and put php files in <b>/var/www/html</b> (default apache2 path) :
 <pre>
