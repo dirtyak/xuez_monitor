@@ -20,6 +20,10 @@ wget https://github.com/dirtyak/xuez_monitor/archive/master.zip
 unzip master.zip
 rm master.zip # We don't need that anymore
 </pre>
+- Fill in the configuration file with your settings
+<pre>
+nano /var/www/hmtl/config.php
+</pre>
 
 # Features
 - Node status
