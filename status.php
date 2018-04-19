@@ -16,7 +16,7 @@ $getconnectioncount = $getconnectioncount->{'result'};
 curl_close($curl);
 
 if(!empty($getconnectioncount)){
-  echo '<div class="w3-container w3-border-bottom w3-border-grey w3-green w3-padding-16"><div class="w3-right">';
+  echo '<div class="w3-container w3-border-bottom w3-border-white w3-green w3-padding-16"><div class="w3-right">';
   echo '<h3>Online</h3>';
   echo "</div>";
   echo '<div class="w3-clear"></div>';
